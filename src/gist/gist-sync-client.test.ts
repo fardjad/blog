@@ -42,6 +42,107 @@ describe("GistSyncClient", () => {
     let octokitStub: Stub<Octokit["rest"]["gists"]>;
     let gistSyncRepository: GistSyncRepository;
     let gistSyncClient: GistSyncClient;
+
+    beforeEach(() => {
+      octokitStub = stub(
+        octokit.rest.gists,
+        "listForUser",
+        resolvesNext([fakeListForUserReponse]),
+      );
+
+      gistSyncRepository = {
+        getLastSyncTime: () => Promise.resolve(new Date(0).toISOString()),
+        setLastSyncTime: () => Promise.resolve(),
+      };
+
+      gistSyncClient = new GistSyncClient({
+        octokit,
+        username: "test",
+        gistSyncRepository,
+      });
+    });
+
+    afterEach(() => {
+      octokitStub.restore();
+    });
+
+    it("should return all gists and update the last sync time", async () => {
+      const actual = await gistSyncClient.listUpdatedGists();
+
+      assertSpyCall(octokitStub, 0, {
+        args: [
+          {
+            per_page: 10,
+            since: new Date(0).toISOString(),
+            username: "test",
+          },
+        ],
+      });
+
+      assertEquals(
+        actual.map(({ id }) => id),
+        ["1", "2"],
+      );
+    });
+  });
+
+  describe("when the first gist is synchronized before", () => {
+    let octokitStub: Stub<Octokit["rest"]["gists"]>;
+    let gistSyncRepository: GistSyncRepository;
+    let gistSyncClient: GistSyncClient;
+
+    beforeEach(() => {
+      octokitStub = stub(
+        octokit.rest.gists,
+        "listForUser",
+        // return the newer gist
+        resolvesNext([
+          { ...fakeListForUserReponse, data: [fakeListForUserReponse.data[0]] },
+        ]),
+      );
+
+      gistSyncRepository = {
+        // return the update time of the older gist
+        getLastSyncTime: () =>
+          Promise.resolve(fakeListForUserReponse.data[1].updated_at),
+        setLastSyncTime: () => Promise.resolve(),
+      };
+
+      gistSyncClient = new GistSyncClient({
+        octokit,
+        username: "test",
+        gistSyncRepository,
+      });
+    });
+
+    afterEach(() => {
+      octokitStub.restore();
+    });
+
+    it("should return the newer gist and update the last sync time", async () => {
+      const actual = await gistSyncClient.listUpdatedGists();
+
+      assertSpyCall(octokitStub, 0, {
+        args: [
+          {
+            per_page: 10,
+            since: fakeListForUserReponse.data[1].updated_at,
+            username: "test",
+          },
+        ],
+      });
+
+      assertEquals(
+        actual.map(({ id }) => id),
+        ["1"],
+      );
+    });
+  });
+
+  describe("when updateLastSyncTime is called", () => {
+    let octokitStub: Stub<Octokit["rest"]["gists"]>;
+    let gistSyncRepository: GistSyncRepository;
+    let gistSyncClient: GistSyncClient;
     let setLastSyncTimeSpy: Spy;
 
     beforeEach(() => {
@@ -66,91 +167,16 @@ describe("GistSyncClient", () => {
     });
 
     afterEach(() => {
-      octokitStub.restore();
       setLastSyncTimeSpy.restore();
+      octokitStub.restore();
     });
 
-    it("should return all gists and update the last sync time", async () => {
-      const actual = await gistSyncClient.listUpdatedGists();
-
-      assertSpyCall(octokitStub, 0, {
-        args: [
-          {
-            per_page: 100,
-            since: new Date(0).toISOString(),
-            username: "test",
-          },
-        ],
-      });
-
-      assertEquals(
-        actual.map(({ id }) => id),
-        ["2", "1"],
-      );
+    it("should update the last sync time to the updated time of the newest gist", async () => {
+      const gists = fakeListForUserReponse.data;
+      await gistSyncClient.updateLastSyncTime(gists);
 
       assertSpyCall(setLastSyncTimeSpy, 0, {
-        args: [fakeListForUserReponse.data[0].updated_at],
-      });
-    });
-  });
-
-  describe("when the first gist is synchronized before", () => {
-    let octokitStub: Stub<Octokit["rest"]["gists"]>;
-    let gistSyncRepository: GistSyncRepository;
-    let gistSyncClient: GistSyncClient;
-    let setLastSyncTimeSpy: Spy;
-
-    beforeEach(() => {
-      octokitStub = stub(
-        octokit.rest.gists,
-        "listForUser",
-        // return the newer gist
-        resolvesNext([
-          { ...fakeListForUserReponse, data: [fakeListForUserReponse.data[0]] },
-        ]),
-      );
-
-      gistSyncRepository = {
-        // return the update time of the older gist
-        getLastSyncTime: () =>
-          Promise.resolve(fakeListForUserReponse.data[1].updated_at),
-        setLastSyncTime: () => Promise.resolve(),
-      };
-
-      setLastSyncTimeSpy = spy(gistSyncRepository, "setLastSyncTime");
-
-      gistSyncClient = new GistSyncClient({
-        octokit,
-        username: "test",
-        gistSyncRepository,
-      });
-    });
-
-    afterEach(() => {
-      octokitStub.restore();
-      setLastSyncTimeSpy.restore();
-    });
-
-    it("should return the newer gist and update the last sync time", async () => {
-      const actual = await gistSyncClient.listUpdatedGists();
-
-      assertSpyCall(octokitStub, 0, {
-        args: [
-          {
-            per_page: 100,
-            since: fakeListForUserReponse.data[1].updated_at,
-            username: "test",
-          },
-        ],
-      });
-
-      assertEquals(
-        actual.map(({ id }) => id),
-        ["1"],
-      );
-
-      assertSpyCall(setLastSyncTimeSpy, 0, {
-        args: [fakeListForUserReponse.data[0].updated_at],
+        args: [gists[0].updated_at],
       });
     });
   });

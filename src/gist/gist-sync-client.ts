@@ -1,5 +1,6 @@
 import type { Octokit } from "octokit";
 import { GistSyncRepository } from "./gist-sync-repository.ts";
+import type { GistInfo } from "./model/gist_info.ts";
 
 export interface GistSyncClientOptions {
   octokit: Octokit;
@@ -11,12 +12,20 @@ export interface GistSyncClientOptions {
 export class GistSyncClient {
   constructor(private options: GistSyncClientOptions) {
     this.options = {
-      pageSize: 100,
+      pageSize: 10,
       ...options,
     };
   }
 
-  async listUpdatedGists() {
+  /**
+   * List gists that have been updated since the last sync time.
+   *
+   * Make sure to call {@link updateLastSyncTime} after using this method to
+   * update the last sync time.
+   *
+   * @returns Gists that have been updated since the last sync time.
+   */
+  async listUpdatedGists(): Promise<GistInfo[]> {
     const since = await this.options.gistSyncRepository.getLastSyncTime();
 
     const response = await this.options.octokit.rest.gists.listForUser({
@@ -29,18 +38,26 @@ export class GistSyncClient {
       throw new Error(`Failed to fetch gists: ${response.status}`);
     }
 
-    const sortedGists = response.data.toSorted((a, b) => {
+    return response.data;
+  }
+
+  /**
+   * Sets the last sync time to the updated time of the newest gist.
+   *
+   * @param gists a list of gists.
+   */
+  async updateLastSyncTime(gists: GistInfo[]): Promise<void> {
+    if (gists.length === 0) {
+      return;
+    }
+
+    const sortedGists = gists.toSorted((a, b) => {
       return (
         new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
       );
     });
+    const lastGist = sortedGists[sortedGists.length - 1];
 
-    if (sortedGists.length > 0) {
-      await this.options.gistSyncRepository.setLastSyncTime(
-        sortedGists[sortedGists.length - 1].updated_at,
-      );
-    }
-
-    return sortedGists;
+    await this.options.gistSyncRepository.setLastSyncTime(lastGist.updated_at);
   }
 }
