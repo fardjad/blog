@@ -11,6 +11,7 @@ import {
 import { Octokit } from "octokit";
 import { GistSyncClient } from "./gist-sync-client.ts";
 import { GistSyncRepository } from "./gist-sync-repository.ts";
+import { Gist } from "./model/gist.ts";
 
 const fakeListForUserReponse = {
   url: "https://api.github.com/users/...",
@@ -172,7 +173,9 @@ describe("GistSyncClient", () => {
     });
 
     it("should update the last sync time to the updated time of the newest gist", async () => {
-      const gists = fakeListForUserReponse.data;
+      const gists = fakeListForUserReponse.data.map(
+        (gistData) => new Gist(gistData),
+      );
       await gistSyncClient.updateLastSyncTime(gists);
 
       assertSpyCall(setLastSyncTimeSpy, 0, {

@@ -1,15 +1,15 @@
 import type { Client, Transaction } from "@libsql/client";
-import type { GistInfo } from "./model/gist_info.ts";
+import { Gist, GistData } from "./model/gist.ts";
 
 export interface GistPostsRepository {
-  getGistInfo(gistId: string): Promise<GistInfo | undefined>;
-  saveGistInfo(gistId: string, gistInfo: GistInfo): Promise<void>;
+  getGist(gistId: string): Promise<Gist | undefined>;
+  saveGist(gist: Gist): Promise<void>;
 }
 
 export class LibSQLGistPostsRepository implements GistPostsRepository {
   constructor(private db: Client | Transaction) {}
 
-  async getGistInfo(gistId: string): Promise<GistInfo | undefined> {
+  async getGist(gistId: string): Promise<Gist | undefined> {
     const result = await this.db.execute({
       sql: "SELECT gist_info FROM gist_posts WHERE gist_id = ?",
       args: [gistId],
@@ -19,14 +19,15 @@ export class LibSQLGistPostsRepository implements GistPostsRepository {
       return undefined;
     }
 
-    return JSON.parse(result.rows[0].gist_info as string) as GistInfo;
+    const gistData: GistData = JSON.parse(result.rows[0].gist_info as string);
+    return new Gist(gistData);
   }
 
-  async saveGistInfo(gistId: string, gistInfo: GistInfo) {
+  async saveGist(gist: Gist) {
     await this.db.execute({
       sql:
         "INSERT INTO gist_posts (gist_id, gist_info) VALUES (?, ?) ON CONFLICT (gist_id) DO UPDATE SET gist_info = excluded.gist_info",
-      args: [gistId, JSON.stringify(gistInfo)],
+      args: [gist.id, JSON.stringify(gist)],
     });
   }
 }

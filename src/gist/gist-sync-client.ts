@@ -1,6 +1,6 @@
 import type { Octokit } from "octokit";
 import { GistSyncRepository } from "./gist-sync-repository.ts";
-import type { GistInfo } from "./model/gist_info.ts";
+import { Gist } from "./model/gist.ts";
 
 export interface GistSyncClientOptions {
   octokit: Octokit;
@@ -9,6 +9,9 @@ export interface GistSyncClientOptions {
   pageSize?: number;
 }
 
+/**
+ * A client for getting updated gists from GitHub incrementally.
+ */
 export class GistSyncClient {
   constructor(private options: GistSyncClientOptions) {
     this.options = {
@@ -25,7 +28,7 @@ export class GistSyncClient {
    *
    * @returns Gists that have been updated since the last sync time.
    */
-  async listUpdatedGists(): Promise<GistInfo[]> {
+  async listUpdatedGists(): Promise<Gist[]> {
     const since = await this.options.gistSyncRepository.getLastSyncTime();
 
     const response = await this.options.octokit.rest.gists.listForUser({
@@ -38,7 +41,7 @@ export class GistSyncClient {
       throw new Error(`Failed to fetch gists: ${response.status}`);
     }
 
-    return response.data;
+    return response.data.map((gistData) => new Gist(gistData));
   }
 
   /**
@@ -46,7 +49,7 @@ export class GistSyncClient {
    *
    * @param gists a list of gists.
    */
-  async updateLastSyncTime(gists: GistInfo[]): Promise<void> {
+  async updateLastSyncTime(gists: Gist[]): Promise<void> {
     if (gists.length === 0) {
       return;
     }

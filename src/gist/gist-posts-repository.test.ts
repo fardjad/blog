@@ -4,11 +4,11 @@ import {
   createMigrationScriptIterator,
   LibSQLMigrator,
 } from "@fardjad/libsql-migrator";
-import { GistInfo } from "./model/gist_info.ts";
+import { Gist, type GistData } from "./model/gist.ts";
 import { LibSQLGistPostsRepository } from "./gist-posts-repository.ts";
 import { assertEquals } from "@std/assert";
 
-const fakeGistInfo: GistInfo = {
+const fakeGistData: GistData = {
   url: "https://api.github.com/gists/00000000000000000000000000000000",
   forks_url:
     "https://api.github.com/gists/00000000000000000000000000000000/forks",
@@ -68,6 +68,8 @@ const fakeGistInfo: GistInfo = {
   truncated: false,
 };
 
+const gist = new Gist(fakeGistData);
+
 describe("GistPostsRepository", () => {
   let db: Client;
 
@@ -90,22 +92,22 @@ describe("GistPostsRepository", () => {
 
   it("should store and read a gist info object", async () => {
     const gistPostsRepository = new LibSQLGistPostsRepository(db);
-    await gistPostsRepository.saveGistInfo(fakeGistInfo.id, fakeGistInfo);
-    const result = await gistPostsRepository.getGistInfo(fakeGistInfo.id);
-    assertEquals(result, fakeGistInfo);
+    await gistPostsRepository.saveGist(gist);
+    const result = await gistPostsRepository.getGist(gist.id);
+    assertEquals(result, gist);
   });
 
   it("should upsert gist info objects", async () => {
     const gistPostsRepository = new LibSQLGistPostsRepository(db);
-    await gistPostsRepository.saveGistInfo(fakeGistInfo.id, fakeGistInfo);
-    await gistPostsRepository.saveGistInfo(fakeGistInfo.id, {
-      ...fakeGistInfo,
+    await gistPostsRepository.saveGist(gist);
+
+    const newGist = new Gist({
+      ...fakeGistData,
       updated_at: "2000-01-03T00:00:00Z",
     });
-    const result = await gistPostsRepository.getGistInfo(fakeGistInfo.id);
-    assertEquals(result, {
-      ...fakeGistInfo,
-      updated_at: "2000-01-03T00:00:00Z",
-    });
+    await gistPostsRepository.saveGist(newGist);
+
+    const result = await gistPostsRepository.getGist(gist.id);
+    assertEquals(result, newGist);
   });
 });

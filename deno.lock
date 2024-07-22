@@ -14,6 +14,7 @@
       "jsr:@std/testing@^0.225.3": "jsr:@std/testing@0.225.3",
       "npm:@libsql/client": "npm:@libsql/client@0.7.0",
       "npm:@libsql/client@^0.7.0": "npm:@libsql/client@0.7.0",
+      "npm:hashtag-regex@^2.2.0": "npm:hashtag-regex@2.2.0",
       "npm:husky": "npm:husky@9.1.1",
       "npm:octokit@^4.0.2": "npm:octokit@4.0.2_@octokit+core@6.1.2",
       "npm:zod@^3.23.8": "npm:zod@3.23.8"
@@ -372,6 +373,10 @@
           "fetch-blob": "fetch-blob@3.2.0"
         }
       },
+      "hashtag-regex@2.2.0": {
+        "integrity": "sha512-9y6y4WgU40gdj8OXW5btOP14U/wPuGbd+0MLRJEkvvXayettkCHLiWKpHUp2IOCtefpCTkrHlYF8F1ZW/n/6tQ==",
+        "dependencies": {}
+      },
       "husky@9.1.1": {
         "integrity": "sha512-fCqlqLXcBnXa/TJXmT93/A36tJsjdJkibQ1MuIiFyCCYUlpYpIaj2mv1w+3KR6Rzu1IC3slFTje5f6DUp2A2rg==",
         "dependencies": {}
@@ -462,6 +467,7 @@
       "jsr:@std/testing@^0.225.3",
       "npm:@hono/zod-validator@^0.2.2",
       "npm:@libsql/client@^0.7.0",
+      "npm:hashtag-regex@^2.2.0",
       "npm:octokit@^4.0.2",
       "npm:zod@^3.23.8"
     ]
