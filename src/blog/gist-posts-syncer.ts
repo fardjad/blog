@@ -34,9 +34,17 @@ export class GistPostSyncer implements GistPostSyncer {
         continue;
       }
 
+      const existingPost = await this.postRepository.getPost(gist.id);
       const slug = slugify(gist.title);
-      const slugNumber = await this.postRepository.getSlugCounter(slug);
-      const nextSlugNumber = slugNumber == null ? 0 : slugNumber + 1;
+      let slugCounter = 0;
+      if (existingPost != null) {
+        slugCounter = existingPost.slugCounter;
+      } else {
+        const currentSlugCounter = await this.postRepository.getSlugCounter(
+          slug,
+        );
+        slugCounter = currentSlugCounter == null ? 0 : currentSlugCounter + 1;
+      }
 
       const post = new Post({
         gistId: gist.id,
@@ -51,7 +59,7 @@ export class GistPostSyncer implements GistPostSyncer {
         public: gist.public,
 
         slug: slug,
-        slugCounter: nextSlugNumber,
+        slugCounter,
       });
 
       await this.postRepository.savePost(post);

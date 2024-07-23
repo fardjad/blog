@@ -17,9 +17,7 @@
       "npm:@libsql/client@^0.7.0": "npm:@libsql/client@0.7.0",
       "npm:@sindresorhus/slugify@^2.2.1": "npm:@sindresorhus/slugify@2.2.1",
       "npm:hashtag-regex@^2.2.0": "npm:hashtag-regex@2.2.0",
-      "npm:husky": "npm:husky@9.1.1",
-      "npm:octokit@^4.0.2": "npm:octokit@4.0.2_@octokit+core@6.1.2",
-      "npm:zod@^3.23.8": "npm:zod@3.23.8"
+      "npm:octokit@^4.0.2": "npm:octokit@4.0.2_@octokit+core@6.1.2"
     },
     "jsr": {
       "@fardjad/libsql-migrator@0.1.16": {
@@ -399,10 +397,6 @@
         "integrity": "sha512-9y6y4WgU40gdj8OXW5btOP14U/wPuGbd+0MLRJEkvvXayettkCHLiWKpHUp2IOCtefpCTkrHlYF8F1ZW/n/6tQ==",
         "dependencies": {}
       },
-      "husky@9.1.1": {
-        "integrity": "sha512-fCqlqLXcBnXa/TJXmT93/A36tJsjdJkibQ1MuIiFyCCYUlpYpIaj2mv1w+3KR6Rzu1IC3slFTje5f6DUp2A2rg==",
-        "dependencies": {}
-      },
       "js-base64@3.7.7": {
         "integrity": "sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==",
         "dependencies": {}
@@ -471,10 +465,6 @@
       "ws@8.18.0": {
         "integrity": "sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==",
         "dependencies": {}
-      },
-      "zod@3.23.8": {
-        "integrity": "sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==",
-        "dependencies": {}
       }
     }
   },
@@ -484,6 +474,7 @@
       "jsr:@fardjad/libsql-migrator@^0.1.16",
       "jsr:@hono/hono@^4.5.0",
       "jsr:@std/assert@^1.0.0",
+      "jsr:@std/dotenv@^0.225.0",
       "jsr:@std/encoding@^1.0.1",
       "jsr:@std/fs@^0.229.3",
       "jsr:@std/path@^1.0.1",

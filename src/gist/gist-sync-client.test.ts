@@ -73,7 +73,7 @@ describe("GistSyncClient", () => {
       assertSpyCall(octokitStub, 0, {
         args: [
           {
-            per_page: 10,
+            per_page: 100,
             since: new Date(0).toISOString(),
             username: "test",
           },
@@ -126,7 +126,7 @@ describe("GistSyncClient", () => {
       assertSpyCall(octokitStub, 0, {
         args: [
           {
-            per_page: 10,
+            per_page: 100,
             since: fakeListForUserReponse.data[1].updated_at,
             username: "test",
           },

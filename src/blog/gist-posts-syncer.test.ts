@@ -88,6 +88,7 @@ describe("GistPostsSyncer", () => {
     describe("when no other posts with the same title exist", () => {
       const postRepository = {
         getSlugCounter: () => Promise.resolve(undefined),
+        getPost: () => Promise.resolve(undefined), // no existing post with the same gist id
         savePost: () => Promise.resolve(),
       } as unknown as PostRepository;
       const savePostSpy = spy(postRepository, "savePost");
@@ -106,6 +107,7 @@ describe("GistPostsSyncer", () => {
     describe("when another post with the same title exists", () => {
       const postRepository = {
         getSlugCounter: () => Promise.resolve(0),
+        getPost: () => Promise.resolve(undefined), // no existing post with the same gist id
         savePost: () => Promise.resolve(),
       } as unknown as PostRepository;
       const savePostSpy = spy(postRepository, "savePost");
@@ -117,6 +119,25 @@ describe("GistPostsSyncer", () => {
         assertObjectMatch(savePostSpy.calls[0].args[0], {
           slug: "title",
           slugCounter: 1,
+        });
+      });
+    });
+
+    describe("when the same post gets updated", () => {
+      const postRepository = {
+        getSlugCounter: () => Promise.resolve(10),
+        getPost: () => Promise.resolve({ slugCounter: 5 }),
+        savePost: () => Promise.resolve(),
+      } as unknown as PostRepository;
+      const savePostSpy = spy(postRepository, "savePost");
+
+      it("should save the post with slug_counter=5", async () => {
+        const syncer = new GistPostSyncer(gistSyncClient, postRepository);
+        await syncer.sync();
+
+        assertObjectMatch(savePostSpy.calls[0].args[0], {
+          slug: "title",
+          slugCounter: 5,
         });
       });
     });

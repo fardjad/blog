@@ -15,7 +15,7 @@ export interface GistSyncClientOptions {
 export class GistSyncClient {
   constructor(private options: GistSyncClientOptions) {
     this.options = {
-      pageSize: 10,
+      pageSize: 100,
       ...options,
     };
   }
