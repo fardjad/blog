@@ -8,17 +8,14 @@ export type GistData = Awaited<
 /**
  * A Gist is a GitHub Gist with a description that contains a title and tags.
  */
-interface Gist extends GistData {
-  title: string;
-  tags: Set<string>;
-}
+export interface Gist extends GistData {}
 
-const Gist = function Gist(this: GistData, gistInfoData: GistData) {
-  Object.assign(this, gistInfoData);
-} as unknown as { new (gistInfoData: GistData): Gist };
+export class Gist implements Gist {
+  constructor(gistInfoData: GistData) {
+    Object.assign(this, gistInfoData);
+  }
 
-Object.defineProperty(Gist.prototype, "title", {
-  get(this: GistData) {
+  get title() {
     const description = this.description ?? "";
     const regexForTitle = description.match(/\[.*\]/);
     const titleWithBrackets = regexForTitle?.[0] ?? "";
@@ -27,15 +24,11 @@ Object.defineProperty(Gist.prototype, "title", {
       : "";
 
     return title;
-  },
-});
+  }
 
-Object.defineProperty(Gist.prototype, "tags", {
-  get(this: GistData) {
+  get tags() {
     const description = this.description ?? "";
     const tags = description.matchAll(hashtagRegex()) ?? [];
     return new Set(Array.from(tags, (tag) => tag[0].substring(1)));
-  },
-});
-
-export { Gist };
+  }
+}
