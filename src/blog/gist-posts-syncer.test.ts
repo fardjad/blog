@@ -1,7 +1,7 @@
 import { describe, it } from "@std/testing/bdd";
 import { assertSpyCall, spy } from "@std/testing/mock";
 import { assertObjectMatch } from "@std/assert";
-import { GistPostSyncer } from "./gist-posts-syncer.ts";
+import { GistPostsSyncer } from "./gist-posts-syncer.ts";
 import { GistSyncClient } from "../gist/gist-sync-client.ts";
 import { PostRepository } from "./post-repository.ts";
 import { Gist } from "../gist/model/gist.ts";
@@ -48,7 +48,7 @@ describe("GistPostsSyncer", () => {
     const postRepository = {} as unknown as PostRepository;
 
     it("should update the last sync time", async () => {
-      const syncer = new GistPostSyncer(gistSyncClient, postRepository);
+      const syncer = new GistPostsSyncer(gistSyncClient, postRepository);
       await syncer.sync();
 
       assertSpyCall(updateLastSyncTimeSpy, 0, { args: [updatedGists] });
@@ -94,7 +94,7 @@ describe("GistPostsSyncer", () => {
       const savePostSpy = spy(postRepository, "savePost");
 
       it("should save the post with slug_counter=0", async () => {
-        const syncer = new GistPostSyncer(gistSyncClient, postRepository);
+        const syncer = new GistPostsSyncer(gistSyncClient, postRepository);
         await syncer.sync();
 
         assertObjectMatch(savePostSpy.calls[0].args[0], {
@@ -113,7 +113,7 @@ describe("GistPostsSyncer", () => {
       const savePostSpy = spy(postRepository, "savePost");
 
       it("should save the post with slug_counter=1", async () => {
-        const syncer = new GistPostSyncer(gistSyncClient, postRepository);
+        const syncer = new GistPostsSyncer(gistSyncClient, postRepository);
         await syncer.sync();
 
         assertObjectMatch(savePostSpy.calls[0].args[0], {
@@ -132,7 +132,7 @@ describe("GistPostsSyncer", () => {
       const savePostSpy = spy(postRepository, "savePost");
 
       it("should save the post with slug_counter=5", async () => {
-        const syncer = new GistPostSyncer(gistSyncClient, postRepository);
+        const syncer = new GistPostsSyncer(gistSyncClient, postRepository);
         await syncer.sync();
 
         assertObjectMatch(savePostSpy.calls[0].args[0], {

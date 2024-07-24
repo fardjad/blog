@@ -7,11 +7,11 @@ import { Gist } from "../gist/model/gist.ts";
 /**
  * Stores updated gists with blog tag into the database.
  */
-export interface GistPostSyncer {
+export interface GistPostsSyncer {
   sync(): Promise<void>;
 }
 
-export class GistPostSyncer implements GistPostSyncer {
+export class GistPostsSyncer implements GistPostsSyncer {
   constructor(
     private readonly gistSyncClient: GistSyncClient,
     private readonly postRepository: PostRepository,

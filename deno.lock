@@ -6,6 +6,7 @@
       "jsr:@hono/hono@^4.5.0": "jsr:@hono/hono@4.5.0",
       "jsr:@std/assert@1.0.0-rc.2": "jsr:@std/assert@1.0.0-rc.2",
       "jsr:@std/assert@^1.0.0": "jsr:@std/assert@1.0.0",
+      "jsr:@std/dotenv@^0.225.0": "jsr:@std/dotenv@0.225.0",
       "jsr:@std/encoding@^1.0.1": "jsr:@std/encoding@1.0.1",
       "jsr:@std/fs@^0.229.3": "jsr:@std/fs@0.229.3",
       "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.1",
@@ -42,6 +43,9 @@
         "dependencies": [
           "jsr:@std/internal@^1.0.0"
         ]
+      },
+      "@std/dotenv@0.225.0": {
+        "integrity": "44db32932c67df82790a3e6847d7007befb6cc22d71f2f3ee7b7d00e1f0d6c94"
       },
       "@std/encoding@1.0.1": {
         "integrity": "5955c6c542ebb4ce6587c3b548dc71e07a6c27614f1976d1d3887b1196cf4e65"
