@@ -6,6 +6,10 @@ export interface PostRepository {
   savePost(post: Post): Promise<void>;
   getSlugCounter(slug: string): Promise<number | undefined>;
   getPostBySlug(slugWithCounter: string): Promise<Post | undefined>;
+  listPosts(
+    page?: number,
+    pageSize?: number,
+  ): Promise<{ totalPages: number; posts: Post[] }>;
 }
 
 export class LibSQLPostRepository implements PostRepository {
@@ -110,5 +114,61 @@ export class LibSQLPostRepository implements PostRepository {
       slug: result.rows[0].slug as string,
       slugCounter: result.rows[0].slug_counter as number,
     });
+  }
+
+  async listPosts(page = 0, pageSize = 100) {
+    if (pageSize < 1) {
+      throw new Error("pageSize must be at least 1");
+    }
+    if (!Number.isInteger(pageSize)) {
+      throw new Error("pageSize must be an integer");
+    }
+
+    if (page < 0) {
+      throw new Error("page must be at least 0");
+    }
+    if (!Number.isInteger(page)) {
+      throw new Error("page must be an integer");
+    }
+
+    const postsCountResultSet = await this.db.execute({
+      sql: "SELECT COUNT(*) as count FROM posts;",
+      args: [],
+    });
+
+    const totalPages = Math.ceil(
+      (postsCountResultSet.rows[0].count as number) / pageSize,
+    );
+
+    const postsResultSet = await this.db.execute({
+      sql: `
+        SELECT * FROM posts
+        ORDER BY created_at DESC
+        LIMIT :pageSize OFFSET :offset
+      `,
+      args: {
+        pageSize,
+        offset: page * pageSize,
+      },
+    });
+
+    const posts = postsResultSet.rows.map((row) => {
+      return new Post({
+        gistId: row.gist_id as string,
+        htmlUrl: row.html_url as string,
+        contentUrl: row.content_url as string,
+
+        title: row.title as string,
+        tags: new Set(JSON.parse(row.tags as string) as string[]),
+        createdAt: new Date(row.created_at as string),
+        updatedAt: new Date(row.updated_at as string),
+        ownerId: row.owner_id as number,
+        public: Boolean(row.public),
+        slug: row.slug as string,
+        slugCounter: row.slug_counter as number,
+      });
+    });
+
+    return { totalPages, posts };
   }
 }
