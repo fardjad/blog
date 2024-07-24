@@ -22,10 +22,13 @@ CREATE TABLE posts (
     ) STORED
 );
 
+CREATE INDEX slug ON posts(slug);
 CREATE UNIQUE INDEX unique_slug ON posts(slug, slug_counter);
 CREATE INDEX slug_with_counter ON posts(slug_with_counter);
+CREATE INDEX created_at ON posts(created_at);
 
 -- gist_sync
 CREATE TABLE gist_sync (
+    row_id INTEGER PRIMARY KEY CHECK (row_id = 1), -- only one row
     last_sync TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now'))
 )

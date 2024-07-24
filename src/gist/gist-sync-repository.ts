@@ -10,7 +10,7 @@ export class LibSQLGistSyncRepository implements GistSyncRepository {
 
   async getLastSyncTime() {
     const result = await this.db.execute(
-      "SELECT last_sync FROM gist_sync ORDER BY last_sync DESC LIMIT 1",
+      "SELECT last_sync FROM gist_sync WHERE row_id = 1",
     );
 
     if (result.rows.length === 0) {
@@ -21,10 +21,10 @@ export class LibSQLGistSyncRepository implements GistSyncRepository {
   }
 
   async setLastSyncTime(time: string) {
-    await this.db.execute("DELETE FROM gist_sync");
     await this.db.execute({
-      sql: "INSERT INTO gist_sync (last_sync) VALUES (?)",
-      args: [time],
+      sql:
+        "INSERT INTO gist_sync (row_id, last_sync) VALUES (?, ?) ON CONFLICT(row_id) DO UPDATE SET last_sync = excluded.last_sync",
+      args: [1, time],
     });
   }
 }
