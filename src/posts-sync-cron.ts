@@ -8,7 +8,8 @@ import { octokit } from "./gist/octokit.ts";
 
 const env = await load();
 
-Deno.cron("Sync posts", "*/1 * * * *", async () => {
+// Run the cron job every minute
+Deno.cron("Sync posts", "* * * * *", async () => {
   const tx = await client.transaction();
 
   const gistSyncRepository = new LibSQLGistSyncRepository(tx);
