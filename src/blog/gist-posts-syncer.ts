@@ -46,12 +46,18 @@ export class GistPostsSyncer implements GistPostsSyncer {
         slugCounter = currentSlugCounter == null ? 0 : currentSlugCounter + 1;
       }
 
+      const content = await this.gistSyncClient.fetchContent(
+        gistFirstMarkdownUrl,
+      );
+
       const post = new Post({
         gistId: gist.id,
         htmlUrl: gist.html_url,
         contentUrl: gistFirstMarkdownUrl,
+        content,
 
         title: gist.title,
+        description: gist.processedDescription,
         tags: gist.tags,
         createdAt: new Date(gist.created_at),
         updatedAt: new Date(gist.updated_at),

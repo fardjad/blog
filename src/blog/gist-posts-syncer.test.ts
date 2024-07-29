@@ -83,6 +83,7 @@ describe("GistPostsSyncer", () => {
     const gistSyncClient = {
       listUpdatedGists: () => Promise.resolve(updatedGists),
       updateLastSyncTime: () => Promise.resolve(),
+      fetchContent: () => Promise.resolve("# Content"),
     } as unknown as GistSyncClient;
 
     describe("when no other posts with the same title exist", () => {
