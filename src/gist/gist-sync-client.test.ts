@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, it } from "@std/testing/bdd";
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertRejects } from "@std/assert";
 import {
   assertSpyCall,
   resolvesNext,
@@ -74,7 +74,8 @@ describe("GistSyncClient", () => {
         args: [
           {
             per_page: 100,
-            since: new Date(0).toISOString(),
+            // 1 is added to the last sync time to avoid fetching the same gist again
+            since: new Date(1).toISOString(),
             username: "test",
           },
         ],
@@ -127,7 +128,9 @@ describe("GistSyncClient", () => {
         args: [
           {
             per_page: 100,
-            since: fakeListForUserReponse.data[1].updated_at,
+            since: new Date(
+              Date.parse(fakeListForUserReponse.data[1].updated_at) + 1,
+            ).toISOString(),
             username: "test",
           },
         ],
@@ -180,6 +183,78 @@ describe("GistSyncClient", () => {
 
       assertSpyCall(setLastSyncTimeSpy, 0, {
         args: [gists[0].updated_at],
+      });
+    });
+  });
+
+  describe("when fetchContent is called", () => {
+    const contentUrl =
+      "https://gist.githubusercontent.com/username/1/raw/1/file-name.md";
+    let gistSyncClient: GistSyncClient;
+    let octokitStub: Stub<Octokit>;
+
+    beforeEach(() => {
+      octokitStub = stub(
+        octokit,
+        "request",
+        (options): ReturnType<(typeof octokit)["request"]> => {
+          // Somehow the type of options is not inferred correctly
+          const { url, method } = options as unknown as {
+            url: string;
+            method: string;
+          };
+
+          if (method !== "GET") {
+            throw new Error(`Unexpected method: ${method}`);
+          }
+
+          if (url !== contentUrl) {
+            return Promise.resolve({
+              data: "404: Not Found",
+              status: 404,
+              headers: {},
+              url,
+            });
+          }
+
+          return Promise.resolve({
+            data: "# Markdown content",
+            status: 200,
+            headers: {},
+            url,
+          });
+        },
+      );
+
+      gistSyncClient = new GistSyncClient({
+        octokit,
+        username: "test",
+        gistSyncRepository: {} as unknown as GistSyncRepository,
+      });
+    });
+
+    afterEach(() => {
+      octokitStub.restore();
+    });
+
+    it("should return the content when the file exists", async () => {
+      const content = await gistSyncClient.fetchContent(contentUrl);
+      assertSpyCall(octokitStub, 0, {
+        args: [{ url: contentUrl, method: "GET" }],
+      });
+      assertEquals(content, "# Markdown content");
+    });
+
+    it("should throw an error when the file doesn't exist", async () => {
+      const nonExistentUrl =
+        "https://gist.githubusercontent.com/username/1/raw/1/non-existent.md";
+
+      await assertRejects(async () => {
+        await gistSyncClient.fetchContent(nonExistentUrl);
+      });
+
+      assertSpyCall(octokitStub, 0, {
+        args: [{ url: nonExistentUrl, method: "GET" }],
       });
     });
   });

@@ -29,7 +29,13 @@ export class GistSyncClient {
    * @returns Gists that have been updated since the last sync time.
    */
   async listUpdatedGists(): Promise<Gist[]> {
-    const since = await this.options.gistSyncRepository.getLastSyncTime();
+    const lastSyncTime = await this.options.gistSyncRepository
+      .getLastSyncTime();
+
+    // GitHub API returns gists that are updated since and including the given
+    // time so we'll add 1 millisecond to the last sync time to avoid fetching
+    // the same gist again.
+    const since = new Date(Date.parse(lastSyncTime) + 1).toISOString();
 
     const response = await this.options.octokit.rest.gists.listForUser({
       username: this.options.username,
@@ -62,5 +68,18 @@ export class GistSyncClient {
     const lastGist = sortedGists[sortedGists.length - 1];
 
     await this.options.gistSyncRepository.setLastSyncTime(lastGist.updated_at);
+  }
+
+  async fetchContent(url: string): Promise<string> {
+    const response = await this.options.octokit.request<string>({
+      method: "GET",
+      url: url,
+    });
+
+    if (response.status !== 200) {
+      throw new Error(`Failed to fetch content: ${response.status}`);
+    }
+
+    return response.data;
   }
 }
