@@ -14,6 +14,8 @@ export const createFakePostData = (
     htmlUrl: `https://gist.github.com/username/${gistId}`,
     contentUrl:
       `https://gist.githubusercontent.com/username/${gistId}/raw/${markdownId}/file-name.md`,
+    content: "# Content",
+    description: "Description",
     title,
     tags: new Set(["blog"]),
     createdAt: new Date(0),
