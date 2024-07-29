@@ -67,6 +67,18 @@ describe("GistInfo", () => {
     });
   });
 
+  describe("extracting the processed description", () => {
+    const gistData = {
+      description: "[Title] Some description #tag1 #tag2",
+    } as unknown as GistData;
+
+    const gist = new Gist(gistData);
+
+    it("should remove the title and tags and return the text in between", () => {
+      assertEquals(gist.processedDescription, "Some description");
+    });
+  });
+
   describe("JSON serialization", () => {
     const gistData = {
       description: "some text [title] more text #tag1 #tag2",

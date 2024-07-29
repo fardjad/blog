@@ -26,6 +26,12 @@ export class Gist implements Gist {
     return title;
   }
 
+  get processedDescription() {
+    const rawDescription = this.description ?? "";
+    return rawDescription.replace(/\[.*\]/, "").replaceAll(hashtagRegex(), "")
+      .trim();
+  }
+
   get tags() {
     const description = this.description ?? "";
     const tags = description.matchAll(hashtagRegex()) ?? [];
