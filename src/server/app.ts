@@ -1,63 +1,41 @@
 import { Hono } from "hono";
-import { serveStatic } from "hono/deno";
 import { trimTrailingSlash } from "hono/trailing-slash";
 import type { Client } from "@libsql/client";
-import { createHomeRoute } from "./route/home.tsx";
-import { createPostRoute } from "./route/post.tsx";
-// @deno-types="npm:@types/html-minifier-terser"
-import { minify } from "html-minifier-terser";
-import { cache } from "hono/cache";
-import { relative } from "@std/path";
+import { createHomeRoute } from "./page/home.tsx";
+import { createPostRoute } from "./page/post.tsx";
+import { minifyHtml } from "./middleware/minify-html.ts";
+import { serveDirectory } from "./middleware/serve-directory.ts";
+import { prettifyHtml } from "./middleware/prettify-html.ts";
+import { generateTailwindCss } from "./tailwind/tailwind.ts";
+import { cache } from "./cache/cache.ts";
+import { devMode } from "../dev-mode.ts";
 
 export const createApp = (client: Client) => {
   const app = new Hono();
 
   app.use(trimTrailingSlash());
 
-  app.get(
-    "*",
-    cache({
-      cacheName: "blog",
-      cacheControl: "public, max-age=300",
-      wait: true,
-    }),
+  const serveDirectoryHandler = serveDirectory(
+    "/static",
+    new URL("./static", import.meta.url).pathname,
   );
 
-  app.use(async (c, next) => {
-    await next();
-
-    if (!c.res.headers.get("Content-Type")?.startsWith("text/html")) {
-      return;
-    }
-
-    const html = await c.res.text();
-    const minifiedHtml = await minify(html, {
-      collapseWhitespace: true,
+  if (devMode) {
+    app.use(prettifyHtml());
+    app.get("/static/tailwind.css", async (c) => {
+      c.res.headers.set("Content-Type", "text/css");
+      return c.body(await generateTailwindCss(), 200);
     });
-    c.res = new Response(minifiedHtml, c.res);
-  });
+    app.use("/static/*", serveDirectoryHandler);
+  } else {
+    app.use("/static/*", serveDirectoryHandler);
+    app.use(minifyHtml());
+    app.get("*", cache);
+  }
 
-  app.use(
-    "/static/*",
-    serveStatic({
-      rewriteRequestPath: (path) => {
-        const pathWithoutTrailingSlashes = path.replace(/\/+$/, "");
-        const pathWithoutStatic = pathWithoutTrailingSlashes.replace(
-          /^\/static/,
-          "",
-        );
-        if (pathWithoutStatic === "") {
-          return "/index.html";
-        }
-
-        return pathWithoutStatic;
-      },
-      root: relative(Deno.cwd(), new URL("./static", import.meta.url).pathname),
-    }),
-  );
-
-  const homeRoute = createHomeRoute(client);
-  const postRoute = createPostRoute(client);
-
-  return app.route("/", homeRoute).route("/", postRoute);
+  return app
+    // / => home
+    .route("/", createHomeRoute(client))
+    // /posts/:slug => post
+    .route("/posts", createPostRoute(client));
 };

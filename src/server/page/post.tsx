@@ -32,7 +32,7 @@ export const createPostRoute = (client: Client) => {
   const app = new Hono<{ Variables: Variables }>();
   app.use(transactional(client));
 
-  return app.get("/posts/:slug", postsQueryValidator, async (c) => {
+  return app.get("/:slug", postsQueryValidator, async (c) => {
     const tx = c.get("tx");
     const postRepository = new LibSQLPostRepository(tx);
 

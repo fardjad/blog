@@ -18,6 +18,7 @@
     "html-minifier-terser": "npm:html-minifier-terser@^7.2.0",
     "octokit": "npm:octokit@^4.0.2",
     "postcss": "npm:postcss@^8.4.40",
+    "prettier": "npm:prettier@^3.3.3",
     "rehype-github-dir": "https://esm.sh/gh/rehypejs/rehype-github@7d7e851b75/packages/dir",
     "rehype-github-heading": "https://esm.sh/gh/rehypejs/rehype-github@7d7e851b75/packages/heading",
     "rehype-raw": "npm:rehype-raw@^7.0.0",
@@ -42,10 +43,13 @@
     "npm:install": "deno run -A deno-npm-install.ts",
     "build": "deno task npm:install && deno task build:tailwind",
 
-    "test": "deno test -A --node-modules-dir --watch src",
+    "test": "deno test -A --node-modules-dir src",
+    "test:watch": "deno test -A --node-modules-dir --watch src",
 
+    "clear-cache": "deno run src/server/cache/clear-cache.ts",
     "start": "deno run -A --node-modules-dir --watch src/index.ts",
-    "start:posts-sync-cron": "deno run -A --unstable-cron --watch src/posts-sync-cron.ts"
+    "dev": "DEV=1 deno task start",
+    "start:sync-posts": "deno run -A --unstable-cron --watch src/cron/sync-posts.ts"
   },
   "compilerOptions": {
     "jsx": "precompile",
