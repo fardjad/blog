@@ -29,8 +29,10 @@ export class LibSQLPostRepository implements PostRepository {
       gistId: result.rows[0].gist_id as string,
       htmlUrl: result.rows[0].html_url as string,
       contentUrl: result.rows[0].content_url as string,
+      content: result.rows[0].content as string,
 
       title: result.rows[0].title as string,
+      description: result.rows[0].description as string,
       tags: new Set(JSON.parse(result.rows[0].tags as string) as string[]),
       createdAt: new Date(result.rows[0].created_at as string),
       updatedAt: new Date(result.rows[0].updated_at as string),
@@ -45,13 +47,15 @@ export class LibSQLPostRepository implements PostRepository {
     await this.db.execute({
       sql: `
         INSERT INTO posts
-            (gist_id, html_url, content_url, title, tags, created_at, updated_at, owner_id, public, slug, slug_counter)
+            (gist_id, html_url, content_url, content, title, description, tags, created_at, updated_at, owner_id, public, slug, slug_counter)
         VALUES
-            (:gist_id, :html_url, :content_url, :title, :tags, :created_at, :updated_at, :owner_id, :public, :slug, :slug_counter)
+            (:gist_id, :html_url, :content_url, :content, :title, :description, :tags, :created_at, :updated_at, :owner_id, :public, :slug, :slug_counter)
         ON CONFLICT(gist_id) DO UPDATE SET
             html_url = excluded.html_url,
             content_url = excluded.content_url,
+            content = excluded.content,
             title = excluded.title,
+            description = excluded.description,
             tags = excluded.tags,
             created_at = excluded.created_at,
             updated_at = excluded.updated_at,
@@ -64,7 +68,9 @@ export class LibSQLPostRepository implements PostRepository {
         gist_id: post.gistId,
         html_url: post.htmlUrl,
         content_url: post.contentUrl,
+        content: post.content,
         title: post.title,
+        description: post.description,
         tags: JSON.stringify(Array.from(post.tags)),
         created_at: post.createdAt.toISOString(),
         updated_at: post.updatedAt.toISOString(),
@@ -104,8 +110,10 @@ export class LibSQLPostRepository implements PostRepository {
       gistId: result.rows[0].gist_id as string,
       htmlUrl: result.rows[0].html_url as string,
       contentUrl: result.rows[0].content_url as string,
+      content: result.rows[0].content as string,
 
       title: result.rows[0].title as string,
+      description: result.rows[0].description as string,
       tags: new Set(JSON.parse(result.rows[0].tags as string) as string[]),
       createdAt: new Date(result.rows[0].created_at as string),
       updatedAt: new Date(result.rows[0].updated_at as string),
@@ -157,8 +165,10 @@ export class LibSQLPostRepository implements PostRepository {
         gistId: row.gist_id as string,
         htmlUrl: row.html_url as string,
         contentUrl: row.content_url as string,
+        content: row.content as string,
 
         title: row.title as string,
+        description: row.description as string,
         tags: new Set(JSON.parse(row.tags as string) as string[]),
         createdAt: new Date(row.created_at as string),
         updatedAt: new Date(row.updated_at as string),

@@ -2,9 +2,11 @@
 CREATE TABLE posts (
     gist_id TEXT PRIMARY KEY,
     html_url TEXT NOT NULL,
-    content_url TEXT,
+    content_url TEXT NOT NULL,
+    content TEXT NOT NULL,
 
     title TEXT NOT NULL,
+    "description" TEXT NOT NULL,
     tags TEXT NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,

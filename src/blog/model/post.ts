@@ -2,7 +2,9 @@ export interface PostData {
   gistId: string;
   htmlUrl: string;
   contentUrl: string;
+  content: string;
   title: string;
+  description: string;
   tags: Set<string>;
   createdAt: Date;
   updatedAt: Date;
