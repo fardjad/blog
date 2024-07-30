@@ -87,12 +87,15 @@ export const createHomeRoute = (client: Client) => {
 
                 return (
                   <li class="hover-underline tw-flex tw-justify-between tw-items-center tw-py-2">
-                    <a href={postUrl.toString()}>
+                    <a
+                      href={postUrl.toString()}
+                      class="tw-truncate tw-w-full tw-overflow-hidden tw-text-ellipsis"
+                    >
                       {post.title}
                     </a>
                     <FormattedDate
                       date={post.createdAt}
-                      className="tw-text-gray-500 tw-text-sm"
+                      className="tw-text-gray-500 tw-text-sm tw-whitespace-nowrap tw-ml-4"
                     />
                   </li>
                 );

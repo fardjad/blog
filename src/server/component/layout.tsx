@@ -53,7 +53,7 @@ export const Layout = (
           />
           <link rel="stylesheet" href="/static/custom.css" />
         </head>
-        <body class="markdown-body tw-box-border tw-min-w-[200px] tw-max-w-[980px] tw-mx-auto tw-p-[45px] sm:tw-p-[15px]">
+        <body class="markdown-body tw-box-border tw-min-w-[400px] tw-max-w-[980px] tw-mx-auto tw-p-[10px] sm:tw-p-[45px]">
           {props.children}
         </body>
       </html>

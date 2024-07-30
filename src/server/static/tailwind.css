@@ -17,6 +17,7 @@
 }.tw-mx-auto {margin-left: auto !important;margin-right: auto !important
 }.tw-mb-2 {margin-bottom: 0.5rem !important
 }.tw-mb-4 {margin-bottom: 1rem !important
+}.tw-ml-4 {margin-left: 1rem !important
 }.tw-mt-2 {margin-top: 0.5rem !important
 }.tw-mt-4 {margin-top: 1rem !important
 }.tw-mt-8 {margin-top: 2rem !important
@@ -24,7 +25,8 @@
 }.tw-flex {display: flex !important
 }.tw-h-24 {height: 6rem !important
 }.tw-w-24 {width: 6rem !important
-}.tw-min-w-\[200px\] {min-width: 200px !important
+}.tw-w-full {width: 100% !important
+}.tw-min-w-\[400px\] {min-width: 400px !important
 }.tw-max-w-\[980px\] {max-width: 980px !important
 }.tw-cursor-not-allowed {cursor: not-allowed !important
 }.tw-list-none {list-style-type: none !important
@@ -34,12 +36,16 @@
 }.tw-justify-center {justify-content: center !important
 }.tw-justify-between {justify-content: space-between !important
 }.tw-gap-4 {gap: 1rem !important
+}.tw-overflow-hidden {overflow: hidden !important
+}.tw-truncate {overflow: hidden !important;text-overflow: ellipsis !important;white-space: nowrap !important
+}.tw-text-ellipsis {text-overflow: ellipsis !important
+}.tw-whitespace-nowrap {white-space: nowrap !important
 }.tw-rounded {border-radius: 0.25rem !important
 }.tw-rounded-full {border-radius: 9999px !important
 }.tw-bg-gray-700 {--tw-bg-opacity: 1 !important;background-color: rgb(55 65 81 / var(--tw-bg-opacity)) !important
 }.tw-bg-gray-800 {--tw-bg-opacity: 1 !important;background-color: rgb(31 41 55 / var(--tw-bg-opacity)) !important
 }.tw-p-0 {padding: 0px !important
-}.tw-p-\[45px\] {padding: 45px !important
+}.tw-p-\[10px\] {padding: 10px !important
 }.tw-px-4 {padding-left: 1rem !important;padding-right: 1rem !important
 }.tw-px-6 {padding-left: 1.5rem !important;padding-right: 1.5rem !important
 }.tw-py-2 {padding-top: 0.5rem !important;padding-bottom: 0.5rem !important
@@ -59,6 +65,6 @@
     }.sm\:tw-mt-0 {margin-top: 0px !important
     }.sm\:tw-flex-row {flex-direction: row !important
     }.sm\:tw-justify-start {justify-content: flex-start !important
-    }.sm\:tw-p-\[15px\] {padding: 15px !important
+    }.sm\:tw-p-\[45px\] {padding: 45px !important
     }
 }

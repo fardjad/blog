@@ -12,8 +12,9 @@ export const PostHeader = (
       <div class="tw-flex tw-items-center tw-gap-4 tw-mt-4">
         <img class="tw-rounded-full tw-w-24 tw-h-24" src={image} />
         <p class="tw-m-0">
-          Published in <a href="/">Fardjad's Blog</a> on{" "}
-          <FormattedDate date={props.publishDate} />
+          Published on <FormattedDate date={props.publishDate} />
+          <br />
+          In <a href="/">Fardjad's Blog</a>
           <br />
           <a href={props.gistHtmlUrl}>Comments and Reactions</a>
         </p>
