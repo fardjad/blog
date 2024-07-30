@@ -44,6 +44,7 @@
     "build": "deno task npm:install && deno task build:tailwind",
 
     "test": "deno test -A --node-modules-dir src",
+    "test:coverage": "deno test -A --node-modules-dir --coverage=coverage src",
     "test:watch": "deno test -A --node-modules-dir --watch src",
 
     "clear-cache": "deno run src/server/cache/clear-cache.ts",

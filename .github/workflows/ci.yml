@@ -1,0 +1,21 @@
+name: ci
+
+on: push
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - run: deno fmt --check
+      - run: deno lint
+      - run: deno task test:coverage
+      - run: deno coverage --lcov coverage/ > coverage.lcov
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.lcov
