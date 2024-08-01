@@ -65,7 +65,7 @@ export const Layout = (
           <TwitterOpenGraph />
 
           <title>{title}</title>
-          <link rel="stylesheet" href="/static/tailwind.css" />
+          <link rel="stylesheet" href="/tailwind.css" />
           <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown-dark.css"

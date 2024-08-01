@@ -47,7 +47,6 @@ Follow the same steps as above, but instead of running `deno task dev`, run the
 following commands:
 
 ```shell
-deno task build # only necessary after making changes to Tailwind classes
 deno task start
 ```
 

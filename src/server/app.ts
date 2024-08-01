@@ -11,10 +11,20 @@ import { generateTailwindCss } from "./tailwind/tailwind.ts";
 import { cache } from "./cache/cache.ts";
 import { devMode } from "../config/values.ts";
 
-export const createApp = (client: Client) => {
+export const createApp = async (client: Client) => {
   const app = new Hono();
 
   app.use(trimTrailingSlash());
+
+  let tailwindCss = await generateTailwindCss();
+  app.get("/tailwind.css", async (c) => {
+    if (devMode) {
+      tailwindCss = await generateTailwindCss();
+    }
+
+    c.res.headers.set("Content-Type", "text/css");
+    return c.body(tailwindCss, 200);
+  });
 
   const serveDirectoryHandler = serveDirectory(
     "/static",
@@ -23,10 +33,6 @@ export const createApp = (client: Client) => {
 
   if (devMode) {
     app.use(prettifyHtml());
-    app.get("/static/tailwind.css", async (c) => {
-      c.res.headers.set("Content-Type", "text/css");
-      return c.body(await generateTailwindCss(), 200);
-    });
     app.use("/static/*", serveDirectoryHandler);
   } else {
     app.use("/static/*", serveDirectoryHandler);
