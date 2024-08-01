@@ -1,4 +1,5 @@
 import { devMode } from "./config/values.ts";
+import { syncPosts } from "./cron/sync-posts.ts";
 import { client } from "./database/client.ts";
 import { createApp } from "./server/app.ts";
 import { exists } from "@std/fs";
@@ -28,6 +29,9 @@ if (devMode) {
 }
 
 await checkNodeModules();
+
+await syncPosts();
+Deno.cron("Sync posts", "* * * * *", syncPosts);
 
 const app = createApp(client);
 Deno.serve(app.fetch);

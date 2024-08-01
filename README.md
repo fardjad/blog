@@ -64,6 +64,8 @@ command, and follow the prompts:
 
 ```shell
 deployctl deploy --env-file .env
+# a production deployment is needed to enable the cron job
+deployctl deploy --prod
 ```
 
 ### GitHub Token

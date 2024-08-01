@@ -46,9 +46,8 @@
     "test:coverage": "deno test -A --node-modules-dir --coverage=coverage src",
     "test:watch": "deno test -A --node-modules-dir --watch src",
     "clear-cache": "deno run src/server/cache/clear-cache.ts",
-    "start": "deno run -A --node-modules-dir --watch src/index.ts",
-    "dev": "DEV=1 deno task start",
-    "start:sync-posts": "deno run -A --unstable-cron --watch src/cron/sync-posts.ts"
+    "start": "deno run -A --node-modules-dir --unstable-cron src/index.ts",
+    "dev": "DEV=1 deno run -A --node-modules-dir --unstable-cron --watch src/index.ts"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

@@ -6,7 +6,7 @@ import { LibSQLPostRepository } from "../blog/post-repository.ts";
 import { octokit } from "../gist/octokit.ts";
 import { githubUsername } from "../config/values.ts";
 
-const syncPosts = async () => {
+export const syncPosts = async () => {
   const tx = await client.transaction();
 
   const gistSyncRepository = new LibSQLGistSyncRepository(tx);
@@ -28,6 +28,3 @@ const syncPosts = async () => {
     tx.close();
   }
 };
-
-await syncPosts();
-Deno.cron("Sync posts", "* * * * *", syncPosts);
