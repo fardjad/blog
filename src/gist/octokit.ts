@@ -1,8 +1,4 @@
-import { load } from "@std/dotenv";
 import { Octokit } from "octokit";
+import { githubAuthToken } from "../config/values.ts";
 
-const env = await load();
-
-export const octokit = new Octokit({
-  auth: env["GITHUB_AUTH_TOKEN"] ?? Deno.env.get("GITHUB_AUTH_TOKEN"),
-});
+export const octokit = new Octokit({ auth: githubAuthToken });

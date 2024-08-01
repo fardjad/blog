@@ -1,5 +1,5 @@
+import { devMode } from "./config/values.ts";
 import { client } from "./database/client.ts";
-import { devMode } from "./dev-mode.ts";
 import { createApp } from "./server/app.ts";
 import { exists } from "@std/fs";
 

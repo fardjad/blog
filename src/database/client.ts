@@ -1,15 +1,13 @@
-import { load } from "@std/dotenv";
 import { createClient } from "@libsql/client";
 import {
   createMigrationScriptIterator,
   LibSQLMigrator,
 } from "@fardjad/libsql-migrator";
-
-const env = await load();
+import { tursoAuthToken, tursoDatabaseUrl } from "../config/values.ts";
 
 const client = createClient({
-  url: env["TURSO_DATABASE_URL"] ?? Deno.env.get("TURSO_DATABASE_URL"),
-  authToken: env["TURSO_AUTH_TOKEN"] ?? Deno.env.get("TURSO_AUTH_TOKEN"),
+  url: tursoDatabaseUrl,
+  authToken: tursoAuthToken,
 });
 
 const migrator = new LibSQLMigrator(

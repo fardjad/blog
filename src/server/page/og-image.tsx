@@ -6,6 +6,12 @@ import { OpenGraphImage } from "../component/opengraph/opengraph-image.tsx";
 import { transactional } from "../middleware/transactional.ts";
 import { Client, Transaction } from "@libsql/client";
 import { LibSQLPostRepository } from "../../blog/post-repository.ts";
+import {
+  authorEmail,
+  authorName,
+  blogDescription,
+  blogTitle,
+} from "../../config/values.ts";
 
 await initWasm(fetch("https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm"));
 const robotoBold = await Deno.readFile(
@@ -15,7 +21,7 @@ const robotoMedium = await Deno.readFile(
   new URL("../static/fonts/Roboto/Roboto-Medium.ttf", import.meta.url),
 );
 
-const gravatarUrl = await generateGravatarImageLink("public@fardjad.com", 128);
+const gravatarUrl = await generateGravatarImageLink(authorEmail, 128);
 
 type Variables = {
   tx: Transaction;
@@ -27,9 +33,8 @@ export const createOgImageRoute = (client: Client) => {
 
   return app.get("/:slug?", async (c) => {
     const { slug } = c.req.param();
-    let title = "My Gistful Musings";
-    let description =
-      "A selected list of my gists that are written in the style of a blog post";
+    let title = blogTitle;
+    let description = blogDescription;
 
     if (slug != null) {
       const tx = c.get("tx");
@@ -49,7 +54,7 @@ export const createOgImageRoute = (client: Client) => {
         title={title}
         description={description}
         gravatarUrl={gravatarUrl}
-        name="Fardjad Davari"
+        name={authorName}
       />,
       {
         width: 1200,

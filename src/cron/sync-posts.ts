@@ -1,12 +1,10 @@
-import { load } from "@std/dotenv";
 import { client } from "../database/client.ts";
 import { GistPostsSyncer } from "../blog/gist-posts-syncer.ts";
 import { GistSyncClient } from "../gist/gist-sync-client.ts";
 import { LibSQLGistSyncRepository } from "../gist/gist-sync-repository.ts";
 import { LibSQLPostRepository } from "../blog/post-repository.ts";
 import { octokit } from "../gist/octokit.ts";
-
-const env = await load();
+import { githubUsername } from "../config/values.ts";
 
 const syncPosts = async () => {
   const tx = await client.transaction();
@@ -15,7 +13,7 @@ const syncPosts = async () => {
   const gistSyncClient = new GistSyncClient({
     gistSyncRepository,
     octokit,
-    username: env["GITHUB_USERNAME"] ?? Deno.env.get("GITHUB_USERNAME"),
+    username: githubUsername,
   });
   const postRepository = new LibSQLPostRepository(tx);
 

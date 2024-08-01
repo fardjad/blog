@@ -10,6 +10,14 @@ import { FormattedDate } from "../component/formatted-date.tsx";
 import { PageHeader } from "../component/page-header.tsx";
 import { Pager } from "../component/pager.tsx";
 import { ShowIf } from "../component/show-if.tsx";
+import {
+  authorName,
+  blogDescription,
+  blogTitle,
+  githubUsername,
+  sourceCodeUrl,
+  websiteUrl,
+} from "../../config/values.ts";
 
 type Variables = {
   tx: Transaction;
@@ -52,9 +60,8 @@ export const createHomeRoute = (client: Client) => {
       <OpenGraphContext.Provider
         value={{
           url: c.req.url,
-          description:
-            "A selected list of my gists that are written in the style of a blog post",
-          title: "My Gistful Musings",
+          description: blogDescription,
+          title: blogTitle,
           image: `${new URL(`/og-image`, c.req.url).toString()}`,
           type: "article",
         }}
@@ -64,17 +71,17 @@ export const createHomeRoute = (client: Client) => {
           <main>
             <p>
               Hey there! I'm{" "}
-              <a href="https://www.fardjad.com">Fardjad Davari</a>. I'm a
-              pragmatic software engineer and a hands-on architect. I have a
-              passion for socio-technical systems and collaborative software
-              design.
+              <a href={websiteUrl}>{authorName}</a>. I'm a pragmatic software
+              engineer and a hands-on architect. I have a passion for
+              socio-technical systems and collaborative software design.
             </p>
             <p>
               This page contains a selected list of my{" "}
-              <a href="https://gist.github.com/fardjad">GitHub Gists</a>{" "}
+              <a href={`https://gist.github.com/${githubUsername}`}>
+                GitHub Gists
+              </a>{" "}
               that are written in the style of a blog post. The source code of
-              the blog is available{" "}
-              <a href="https://github.com/fardjad/blog">here</a>.
+              the blog is available <a href={sourceCodeUrl}>here</a>.
             </p>
             <h2>Posts</h2>
             <ul class="tw-list-none tw-p-0 tw-m-0">

@@ -6,6 +6,7 @@ import { GistSyncClient } from "../gist/gist-sync-client.ts";
 import { PostRepository } from "./post-repository.ts";
 import { Gist } from "../gist/model/gist.ts";
 import { generateRandomString } from "../test-support/random-generator.ts";
+import { blogTag } from "../config/values.ts";
 
 describe("GistPostsSyncer", () => {
   describe("when no blog gists are found", () => {
@@ -15,17 +16,17 @@ describe("GistPostsSyncer", () => {
       // this should be excluded because it has no title
       new Gist({
         id: generateRandomString(32),
-        description: "No title #blog",
+        description: `No title #${blogTag}`,
       } as Gist),
       // this should be excluded because it does not have the blog tag
       new Gist({
         id: generateRandomString(32),
-        description: "[title] #some #tag",
+        description: `[title] #some #${blogTag}`,
       } as Gist),
       // this should be excluded because it does not have a valid markdown file
       new Gist({
         id: generateRandomString(32),
-        description: "[title] #some #blog",
+        description: `[title] #some #${blogTag}`,
         files: {
           "file-name.md": {
             type: "not-markdown",
@@ -59,7 +60,7 @@ describe("GistPostsSyncer", () => {
     const updatedGists = [
       new Gist({
         id: generateRandomString(32),
-        description: "[title] #blog",
+        description: `[title] #${blogTag}`,
         created_at: new Date(0),
         updated_at: new Date(24 * 60 * 60 * 1000),
         public: true,

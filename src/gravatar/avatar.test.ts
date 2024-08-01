@@ -1,6 +1,7 @@
 import { describe, it } from "@std/testing/bdd";
 import { assertEquals, assertMatch } from "@std/assert";
 import { generateGravatarImageLink } from "./avatar.ts";
+import { defaultAvatarImage } from "../config/values.ts";
 
 describe("generateGravatarImageLink", () => {
   it("should generate the correct Gravatar link with default size", async () => {
@@ -29,7 +30,7 @@ describe("generateGravatarImageLink", () => {
     );
     assertEquals(Object.fromEntries(url.searchParams.entries()), {
       s: "128",
-      d: "robohash",
+      d: defaultAvatarImage,
     });
   });
 });

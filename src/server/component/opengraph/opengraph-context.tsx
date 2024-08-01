@@ -1,4 +1,5 @@
 import { createContext } from "hono/jsx";
+import { blogUrl } from "../../../config/values.ts";
 
 export type OpenGraphContextValue = {
   type: "article";
@@ -10,8 +11,8 @@ export type OpenGraphContextValue = {
 
 export const OpenGraphContext = createContext<OpenGraphContextValue>({
   type: "article",
-  url: "https://blog.fardjad.com",
+  url: blogUrl,
   title: "Untitled",
   description: "",
-  image: "https://blog.fardjad.com/og-image",
+  image: `${blogUrl}/og-image`,
 });

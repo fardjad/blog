@@ -3,6 +3,7 @@ import { PostRepository } from "./post-repository.ts";
 import { GistSyncClient } from "../gist/gist-sync-client.ts";
 import { Post } from "./model/post.ts";
 import { Gist } from "../gist/model/gist.ts";
+import { blogTag } from "../config/values.ts";
 
 /**
  * Stores updated gists with blog tag into the database.
@@ -25,7 +26,7 @@ export class GistPostsSyncer implements GistPostsSyncer {
         continue;
       }
 
-      if (!gist.tags.has("blog")) {
+      if (!gist.tags.has(blogTag)) {
         continue;
       }
 

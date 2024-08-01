@@ -9,7 +9,7 @@ import { serveDirectory } from "./middleware/serve-directory.ts";
 import { prettifyHtml } from "./middleware/prettify-html.ts";
 import { generateTailwindCss } from "./tailwind/tailwind.ts";
 import { cache } from "./cache/cache.ts";
-import { devMode } from "../dev-mode.ts";
+import { devMode } from "../config/values.ts";
 
 export const createApp = (client: Client) => {
   const app = new Hono();
