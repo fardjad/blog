@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { trimTrailingSlash } from "hono/trailing-slash";
 import type { Client } from "@libsql/client";
+import { createOgImageRoute } from "./page/og-image.tsx";
 import { createHomeRoute } from "./page/home.tsx";
 import { createPostRoute } from "./page/post.tsx";
 import { minifyHtml } from "./middleware/minify-html.ts";
@@ -34,6 +35,7 @@ export const createApp = (client: Client) => {
   }
 
   return app
+    .route("/og-image", createOgImageRoute(client))
     // / => home
     .route("/", createHomeRoute(client))
     // /posts/:slug => post

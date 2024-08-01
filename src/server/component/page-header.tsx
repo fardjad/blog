@@ -1,5 +1,5 @@
 import { useContext } from "hono/jsx";
-import { OpenGraphContext } from "./opengraph-context.tsx";
+import { OpenGraphContext } from "./opengraph/opengraph-context.tsx";
 
 export const PageHeader = () => {
   const { title } = useContext(OpenGraphContext);

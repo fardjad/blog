@@ -5,8 +5,7 @@ import { LibSQLPostRepository } from "../../blog/post-repository.ts";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { Layout } from "../component/layout.tsx";
-import { OpenGraphContext } from "../component/opengraph-context.tsx";
-import { generateGravatarImageLink } from "../../gravatar/avatar.ts";
+import { OpenGraphContext } from "../component/opengraph/opengraph-context.tsx";
 import { FormattedDate } from "../component/formatted-date.tsx";
 import { PageHeader } from "../component/page-header.tsx";
 import { Pager } from "../component/pager.tsx";
@@ -54,9 +53,9 @@ export const createHomeRoute = (client: Client) => {
         value={{
           url: c.req.url,
           description:
-            "A selected list of my gists that are written in the style of a blog post.",
-          title: "Fardjad's Blog",
-          image: await generateGravatarImageLink("public@fardjad.com", 256),
+            "A selected list of my gists that are written in the style of a blog post",
+          title: "My Gistful Musings",
+          image: `${new URL(`/og-image`, c.req.url).toString()}`,
           type: "article",
         }}
       >

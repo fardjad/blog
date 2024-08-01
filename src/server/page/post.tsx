@@ -5,12 +5,11 @@ import { LibSQLPostRepository } from "../../blog/post-repository.ts";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { Layout } from "../component/layout.tsx";
-import { PostHeader } from "../component/post-header.tsx";
-import { PostBody } from "../component/post-body.tsx";
+import { PostHeader } from "../component/post/post-header.tsx";
+import { PostBody } from "../component/post/post-body.tsx";
 import { renderTrustedMarkdown } from "../../markdown/markdown-renderer.ts";
-import { OpenGraphContext } from "../component/opengraph-context.tsx";
-import { generateGravatarImageLink } from "../../gravatar/avatar.ts";
-import { PostFooter } from "../component/post-footer.tsx";
+import { OpenGraphContext } from "../component/opengraph/opengraph-context.tsx";
+import { PostFooter } from "../component/post/post-footer.tsx";
 
 type Variables = {
   tx: Transaction;
@@ -51,7 +50,7 @@ export const createPostRoute = (client: Client) => {
           url: c.req.url,
           description: post.description,
           title: post.title,
-          image: await generateGravatarImageLink("public@fardjad.com", 256),
+          image: `${new URL(`/og-image/${post.slug}`, c.req.url).toString()}`,
           type: "article",
         }}
       >

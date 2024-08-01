@@ -1,5 +1,4 @@
 import { createContext } from "hono/jsx";
-import { generateGravatarImageLink } from "../../gravatar/avatar.ts";
 
 export type OpenGraphContextValue = {
   type: "article";
@@ -14,5 +13,5 @@ export const OpenGraphContext = createContext<OpenGraphContextValue>({
   url: "https://blog.fardjad.com",
   title: "Untitled",
   description: "",
-  image: await generateGravatarImageLink("public@fardjad.com", 256),
+  image: "https://blog.fardjad.com/og-image",
 });

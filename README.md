@@ -18,12 +18,12 @@ In my opinion GitHub Gists are great for writing blog posts because:
 ### Local Development
 
 1. Clone the repository
-2. Install the Git hooks by running the following command:
+2. Install [Deno](https://docs.deno.com/runtime/manual/#install-deno)
+3. Install the Git hooks by running the following command:
 
    ```shell
    deno task hooks:install
    ```
-3. Install [Deno](https://docs.deno.com/runtime/manual/#install-deno)
 4. Install [Turso CLI](https://docs.turso.tech/quickstart)
 
    _Hint: You can get a local server up and running by running `turso dev`._

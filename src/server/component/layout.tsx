@@ -1,6 +1,6 @@
 import { html } from "hono/html";
 import { type PropsWithChildren, useContext } from "hono/jsx";
-import { OpenGraphContext } from "./opengraph-context.tsx";
+import { OpenGraphContext } from "./opengraph/opengraph-context.tsx";
 
 const Document = ({ children }: PropsWithChildren) =>
   html`<!DOCTYPE html>${children}`;
