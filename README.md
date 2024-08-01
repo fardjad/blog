@@ -29,12 +29,7 @@ In my opinion GitHub Gists are great for writing blog posts because:
    _Hint: You can get a local server up and running by running `turso dev`._
 5. Create a `.env` file in the root directory similar to
    [`.env.example`](./.env.example) and set the environment variables.
-6. Run the following command to start the synchronization job:
-
-   ```shell
-   deno task start:sync-posts
-   ```
-7. Run the following command to start the web application:
+6. Run the following command to start the application:
 
    ```shell
    deno task dev
@@ -127,11 +122,13 @@ have the same slug, the newer post will get a numeric suffix. For example, if
 there are two posts with the title "Hello World", the first post will have the
 slug `hello-world` and the second post will have the slug `hello-world-1`.
 
-There are two routes in the web application:
+There are three routes in the web application:
 
+1. The OpenGraph image route (`/og-image/:slug`) that generates an image for a
+   post based on its content
 1. The home page (`/`) that
    [shows some hard-coded content followed by the list of the posts stored in the database](./src/server/page/home.tsx)
-2. The post page (`/posts/:slug`) that shows the content of a post
+1. The post page (`/posts/:slug`) that shows the content of a post
 
 The posts are rendered on the server using a
 [Markdown renderer](./src/markdown/markdown-renderer.ts). The renderer removes
@@ -145,12 +142,14 @@ All pages are rendered on the server-side and
 
 ## Noteworthy Dependencies
 
-| Name                                                                       | Description                                   |
-| -------------------------------------------------------------------------- | --------------------------------------------- |
-| [Deno](https://deno.com/)                                                  | Javascript Runtime                            |
-| [Turso](https://turso.tech/)                                               | Database                                      |
-| [Hono](https://hono.dev/)                                                  | Web Application Framework                     |
-| [Tailwind CSS](https://tailwindcss.com/)                                   | CSS Framework                                 |
-| [remark](https://github.com/remarkjs)                                      | Markdown Processor                            |
-| [rehype](https://github.com/rehypejs)                                      | HTML Processor                                |
-| [github-markdown-css](https://github.com/sindresorhus/github-markdown-css) | CSS to replicate the style of GitHub Markdown |
+| Name                                                                       | Description                                              |
+| -------------------------------------------------------------------------- | -------------------------------------------------------- |
+| [Deno](https://deno.com/)                                                  | Javascript Runtime                                       |
+| [Turso](https://turso.tech/)                                               | Database                                                 |
+| [Hono](https://hono.dev/)                                                  | Web Application Framework                                |
+| [Tailwind CSS](https://tailwindcss.com/)                                   | CSS Framework                                            |
+| [remark](https://github.com/remarkjs)                                      | Markdown Processor                                       |
+| [rehype](https://github.com/rehypejs)                                      | HTML Processor                                           |
+| [github-markdown-css](https://github.com/sindresorhus/github-markdown-css) | CSS to replicate the style of GitHub Markdown            |
+| [satori](https://github.com/vercel/satori)                                 | HTML+CSS to SVG converter (used for OG image generation) |
+| [resvg](https://github.com/RazrFalcon/resvg)                               | SVG to PNG converter (used for OG image generation)      |
