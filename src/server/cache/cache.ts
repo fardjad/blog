@@ -64,9 +64,3 @@ export const etagCache = <T extends Env>(
 export const deploymentIdContentHash = await sha256(
   Deno.env.get("DENO_DEPLOYMENT_ID") ?? `UNKNOWN-${Date.now()}`,
 );
-
-export const deploymentIdCache = () => {
-  return etagCache((_c, contentHashToMatch) => {
-    return contentHashToMatch === deploymentIdContentHash;
-  });
-};

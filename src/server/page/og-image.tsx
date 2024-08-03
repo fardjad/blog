@@ -12,12 +12,7 @@ import {
   blogDescription,
   blogTitle,
 } from "../../config/values.ts";
-import {
-  CacheVariables,
-  deploymentIdCache,
-  deploymentIdContentHash,
-  etagCache,
-} from "../cache/cache.ts";
+import { CacheVariables, etagCache } from "../cache/cache.ts";
 
 type Variables = {
   tx: Transaction;
@@ -83,15 +78,7 @@ export const createOgImageRoute = (client: Client) => {
 
   return app.get(
     "/",
-    deploymentIdCache,
-    (c) => {
-      if (c.get("cacheHitResponse")) {
-        return Promise.resolve(c.get("cacheHitResponse"));
-      }
-
-      c.set("contentHash", deploymentIdContentHash);
-      return createPngResponse(blogTitle, blogDescription);
-    },
+    () => createPngResponse(blogTitle, blogDescription),
   )
     .get(
       "/:slug",
