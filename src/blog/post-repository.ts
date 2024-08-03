@@ -194,7 +194,7 @@ export class LibSQLPostRepository implements PostRepository {
     });
   }
 
-  async hasPostWithContentHash(contentHash?: string) {
+  async hasPostWithContentHash(slugWithCounter: string, contentHash?: string) {
     if (!contentHash) {
       return false;
     }
@@ -204,8 +204,9 @@ export class LibSQLPostRepository implements PostRepository {
     }
 
     const result = await this.db.execute({
-      sql: "SELECT COUNT(*) as count FROM posts WHERE content_hash = ?",
-      args: [contentHash],
+      sql:
+        "SELECT COUNT(*) as count FROM posts WHERE slug_with_counter = ? AND content_hash = ?",
+      args: [slugWithCounter, contentHash],
     });
 
     return result.rows[0].count as number > 0;

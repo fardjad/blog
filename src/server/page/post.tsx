@@ -10,10 +10,11 @@ import { PostBody } from "../component/post/post-body.tsx";
 import { renderTrustedMarkdown } from "../../markdown/markdown-renderer.ts";
 import { OpenGraphContext } from "../component/opengraph/opengraph-context.tsx";
 import { PostFooter } from "../component/post/post-footer.tsx";
+import { CacheVariables, etagCache } from "../cache/cache.ts";
 
 type Variables = {
   tx: Transaction;
-};
+} & CacheVariables;
 
 const postsQueryValidator = zValidator(
   "param",
@@ -31,38 +32,57 @@ export const createPostRoute = (client: Client) => {
   const app = new Hono<{ Variables: Variables }>();
   app.use(transactional(client));
 
-  return app.get("/:slug", postsQueryValidator, async (c) => {
-    const tx = c.get("tx");
-    const postRepository = new LibSQLPostRepository(tx);
+  return app.get(
+    "/:slug",
+    postsQueryValidator,
+    etagCache<{ Variables: Variables }>((c, contentHashToMatch) => {
+      const { slug } = c.req.param();
+      const tx = c.get("tx");
+      const postRepository = new LibSQLPostRepository(tx);
+      return postRepository.hasPostWithContentHash(
+        slug,
+        contentHashToMatch,
+      );
+    }),
+    async (c) => {
+      if (c.get("cacheHitResponse")) {
+        return c.get("cacheHitResponse");
+      }
 
-    const { slug } = c.req.valid("param");
-    const post = await postRepository.getPostBySlug(slug);
+      const tx = c.get("tx");
+      const postRepository = new LibSQLPostRepository(tx);
 
-    if (!post) {
-      return c.body("Not Found", 404);
-    }
+      const { slug } = c.req.valid("param");
+      const post = await postRepository.getPostBySlug(slug);
 
-    const renderedMarkdown = await renderTrustedMarkdown(post.content);
+      if (!post) {
+        return c.body("Not Found", 404);
+      }
 
-    return c.html(
-      <OpenGraphContext.Provider
-        value={{
-          url: c.req.url,
-          description: post.description,
-          title: post.title,
-          image: `${new URL(`/og-image/${post.slug}`, c.req.url).toString()}`,
-          type: "article",
-        }}
-      >
-        <Layout>
-          <PostHeader
-            gistHtmlUrl={post.htmlUrl}
-            publishDate={post.createdAt}
-          />
-          <PostBody content={renderedMarkdown} />
-          <PostFooter />
-        </Layout>
-      </OpenGraphContext.Provider>,
-    );
-  });
+      const renderedMarkdown = await renderTrustedMarkdown(post.content);
+
+      c.set("contentHash", post.contentHash);
+
+      return c.html(
+        <OpenGraphContext.Provider
+          value={{
+            url: c.req.url,
+            description: post.description,
+            title: post.title,
+            image: `${new URL(`/og-image/${post.slug}`, c.req.url).toString()}`,
+            type: "article",
+          }}
+        >
+          <Layout>
+            <PostHeader
+              gistHtmlUrl={post.htmlUrl}
+              publishDate={post.createdAt}
+            />
+            <PostBody content={renderedMarkdown} />
+            <PostFooter />
+          </Layout>
+        </OpenGraphContext.Provider>,
+      );
+    },
+  );
 };

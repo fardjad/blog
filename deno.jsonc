@@ -42,7 +42,6 @@
     "test": "deno test -A --node-modules-dir src",
     "test:coverage": "deno test -A --node-modules-dir --coverage=coverage src",
     "test:watch": "deno test -A --node-modules-dir --watch src",
-    "clear-cache": "deno run -A src/server/cache/clear-cache.ts",
     "start": "deno run -A --node-modules-dir --unstable-cron src/index.ts",
     "dev": "DEV=1 deno run -A --node-modules-dir --unstable-cron --watch src/index.ts"
   },

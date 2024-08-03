@@ -8,13 +8,15 @@ import { minifyHtml } from "./middleware/minify-html.ts";
 import { serveDirectory } from "./middleware/serve-directory.ts";
 import { prettifyHtml } from "./middleware/prettify-html.ts";
 import { generateTailwindCss } from "./tailwind/tailwind.ts";
-import { cache } from "./cache/cache.ts";
 import { devMode } from "../config/values.ts";
+import { cacheControl } from "./cache/cache.ts";
 
 export const createApp = async (client: Client) => {
   const app = new Hono();
 
   app.use(trimTrailingSlash());
+  app.use(cacheControl);
+  app.use(devMode ? prettifyHtml() : minifyHtml());
 
   let tailwindCss = await generateTailwindCss();
   app.get("/tailwind.css", async (c) => {
@@ -26,19 +28,13 @@ export const createApp = async (client: Client) => {
     return c.body(tailwindCss, 200);
   });
 
-  const serveDirectoryHandler = serveDirectory(
-    "/static",
-    new URL("./static", import.meta.url).pathname,
+  app.get(
+    "/static/*",
+    serveDirectory(
+      "/static",
+      new URL("./static", import.meta.url).pathname,
+    ),
   );
-
-  if (devMode) {
-    app.use(prettifyHtml());
-    app.use("/static/*", serveDirectoryHandler);
-  } else {
-    app.use("/static/*", serveDirectoryHandler);
-    app.use(minifyHtml());
-    app.get("*", cache);
-  }
 
   return app
     .route("/og-image", createOgImageRoute(client))

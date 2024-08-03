@@ -37,9 +37,8 @@ In my opinion GitHub Gists are great for writing blog posts because:
 
 Running the application in development mode means:
 
-1. The cache is disabled.
-2. The HTML output is pretty-printed.
-3. Tailwind CSS is compiled on the fly.
+1. The HTML output is pretty-printed.
+2. Tailwind CSS is compiled on the fly.
 
 ### Running in Production
 
@@ -48,12 +47,6 @@ following commands:
 
 ```shell
 deno task start
-```
-
-If needed, you can clear the application cache by running the following command:
-
-```shell
-deno task clear-cache
 ```
 
 ### Deploying to Deno Deploy
@@ -137,9 +130,6 @@ the first heading with depth 1 (i.e., the first `h1` element) from the Markdown
 content and replaces it with the post title followed by some extra information,
 such as my name, the date of the post, and a link to the original Gist (see
 [here](./src/server/page/post.tsx) for more details).
-
-All pages are rendered on the server-side and
-[cached](./src/server/cache/cache.ts) to reduce the load on the server.
 
 ## Noteworthy Dependencies
 

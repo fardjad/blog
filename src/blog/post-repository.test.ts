@@ -169,6 +169,7 @@ describe("PostRepository", () => {
 
     it("should return true when a post with a matching hash exists", async () => {
       const actual = await postRepository.hasPostWithContentHash(
+        generatedPosts[0].slug,
         generatedPosts[0].contentHash,
       );
 
@@ -176,13 +177,19 @@ describe("PostRepository", () => {
     });
 
     it("should return false when content hash is undefined", async () => {
-      const actual = await postRepository.hasPostWithContentHash(undefined);
+      const actual = await postRepository.hasPostWithContentHash(
+        generatedPosts[0].slug,
+        undefined,
+      );
 
       assertEquals(actual, false);
     });
 
     it("should return false when (the trimmed) content hash is an empty string", async () => {
-      const actual = await postRepository.hasPostWithContentHash(" ");
+      const actual = await postRepository.hasPostWithContentHash(
+        generatedPosts[0].slug,
+        " ",
+      );
 
       assertEquals(actual, false);
     });

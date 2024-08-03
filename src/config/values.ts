@@ -13,7 +13,6 @@ export const sourceCodeUrl = "https://github.com/fardjad/blog";
 
 // Cache
 export const cacheMaxAge = 300;
-export const cacheKey = "blog";
 
 // The tag in Gist description (without the leading `#`) that indicates the
 // Gist is a blog post
