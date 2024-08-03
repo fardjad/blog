@@ -4,11 +4,12 @@ import { FormattedDate } from "../formatted-date.tsx";
 import { generateGravatarImageLink } from "../../../gravatar/avatar.ts";
 import { authorEmail, blogTitle } from "../../../config/values.ts";
 
-export const PostHeader = async (
+const avatarUrl = await generateGravatarImageLink(authorEmail, 128);
+
+export const PostHeader = (
   props: { gistHtmlUrl: string; publishDate: Date },
 ) => {
   const { title } = useContext(OpenGraphContext);
-  const avatarUrl = await generateGravatarImageLink(authorEmail, 128);
 
   return (
     <header class="tw-mb-4 tw-pb-4">
