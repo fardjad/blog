@@ -4,6 +4,7 @@ import { GistSyncClient } from "../gist/gist-sync-client.ts";
 import { Post } from "./model/post.ts";
 import { Gist } from "../gist/model/gist.ts";
 import { blogTag } from "../config/values.ts";
+import { encodeHex } from "@std/encoding";
 
 /**
  * Stores updated gists with blog tag into the database.
@@ -67,6 +68,7 @@ export class GistPostsSyncer implements GistPostsSyncer {
 
         slug: slug,
         slugCounter,
+        contentHash: await this.getContentHash(content),
       });
 
       await this.postRepository.savePost(post);
@@ -79,5 +81,12 @@ export class GistPostsSyncer implements GistPostsSyncer {
     return Object.values(gist.files ?? {}).find(
       (file) => file.type === "text/markdown" && file.raw_url !== undefined,
     )?.raw_url;
+  }
+
+  private async getContentHash(content: string) {
+    const buffer = new TextEncoder().encode(content);
+    return encodeHex(
+      await crypto.subtle.digest("SHA-256", buffer),
+    );
   }
 }

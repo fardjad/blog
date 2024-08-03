@@ -12,6 +12,7 @@ export interface PostData {
   public: boolean;
   slug: string;
   slugCounter: number;
+  contentHash: string;
 }
 
 export interface Post extends PostData {}

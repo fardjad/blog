@@ -1,6 +1,6 @@
 import { describe, it } from "@std/testing/bdd";
 import { assertSpyCall, spy } from "@std/testing/mock";
-import { assertObjectMatch } from "@std/assert";
+import { assertEquals, assertObjectMatch } from "@std/assert";
 import { GistPostsSyncer } from "./gist-posts-syncer.ts";
 import { GistSyncClient } from "../gist/gist-sync-client.ts";
 import { PostRepository } from "./post-repository.ts";
@@ -141,6 +141,86 @@ describe("GistPostsSyncer", () => {
           slug: "title",
           slugCounter: 5,
         });
+      });
+    });
+  });
+
+  describe("hash generation", () => {
+    describe("when the post has some content", () => {
+      const updatedGists = [
+        new Gist({
+          id: generateRandomString(32),
+          description: `[title] #${blogTag}`,
+          created_at: new Date(0),
+          updated_at: new Date(24 * 60 * 60 * 1000),
+          public: true,
+          html_url: `https://gist.github.com/username/${
+            generateRandomString(
+              32,
+            )
+          }`,
+          files: {
+            "file-name.md": {
+              type: "text/markdown",
+              raw_url: `https://gist.githubusercontent.com/username/${
+                generateRandomString(
+                  32,
+                )
+              }/raw/${generateRandomString(40)}/file-name.md`,
+            },
+          },
+        } as unknown as Gist),
+      ];
+
+      const gistSyncClient = {
+        listUpdatedGists: () => Promise.resolve(updatedGists),
+        updateLastSyncTime: () => Promise.resolve(),
+        fetchContent: () => Promise.resolve("# Content"),
+      } as unknown as GistSyncClient;
+
+      it("should generate a hash for the content", async () => {
+        const postRepository = {
+          getSlugCounter: () => Promise.resolve(10),
+          getPost: () => Promise.resolve({ slugCounter: 5 }),
+          savePost: () => Promise.resolve(),
+        } as unknown as PostRepository;
+
+        const savePostSpy = spy(postRepository, "savePost");
+        const syncer = new GistPostsSyncer(gistSyncClient, postRepository);
+        await syncer.sync();
+        assertEquals(savePostSpy.calls[0].args[0].contentHash.length, 64);
+      });
+    });
+
+    describe("when the post does not have any content", () => {
+      const updatedGists = [
+        new Gist({
+          id: generateRandomString(32),
+          description: `[title] #${blogTag}`,
+          created_at: new Date(0),
+          updated_at: new Date(24 * 60 * 60 * 1000),
+          public: true,
+          html_url: `https://gist.github.com/username/${
+            generateRandomString(
+              32,
+            )
+          }`,
+          files: {},
+        } as unknown as Gist),
+      ];
+
+      const gistSyncClient = {
+        listUpdatedGists: () => Promise.resolve(updatedGists),
+        updateLastSyncTime: () => Promise.resolve(),
+        // other methods should not be called
+      } as unknown as GistSyncClient;
+
+      it("should not do anything", async () => {
+        // no methods should be called from the post repository
+        const postRepository = {} as unknown as PostRepository;
+
+        const syncer = new GistPostsSyncer(gistSyncClient, postRepository);
+        await syncer.sync();
       });
     });
   });

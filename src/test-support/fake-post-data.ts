@@ -8,6 +8,7 @@ export const createFakePostData = (
   const gistId = generateRandomString(32);
   const markdownId = generateRandomString(40);
   const title = overrides.title ?? "Title";
+  const contentHash = generateRandomString(32);
 
   return {
     gistId: gistId,
@@ -24,6 +25,7 @@ export const createFakePostData = (
     public: true,
     slug: slugify(title),
     slugCounter: 0,
+    contentHash,
 
     ...overrides,
   };

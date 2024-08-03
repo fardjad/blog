@@ -40,6 +40,7 @@ export class LibSQLPostRepository implements PostRepository {
       public: Boolean(result.rows[0].public),
       slug: result.rows[0].slug as string,
       slugCounter: result.rows[0].slug_counter as number,
+      contentHash: result.rows[0].content_hash as string,
     });
   }
 
@@ -47,9 +48,9 @@ export class LibSQLPostRepository implements PostRepository {
     await this.db.execute({
       sql: `
         INSERT INTO posts
-            (gist_id, html_url, content_url, content, title, description, tags, created_at, updated_at, owner_id, public, slug, slug_counter)
+            (gist_id, html_url, content_url, content, title, description, tags, created_at, updated_at, owner_id, public, slug, slug_counter, content_hash)
         VALUES
-            (:gist_id, :html_url, :content_url, :content, :title, :description, :tags, :created_at, :updated_at, :owner_id, :public, :slug, :slug_counter)
+            (:gist_id, :html_url, :content_url, :content, :title, :description, :tags, :created_at, :updated_at, :owner_id, :public, :slug, :slug_counter, :content_hash)
         ON CONFLICT(gist_id) DO UPDATE SET
             html_url = excluded.html_url,
             content_url = excluded.content_url,
@@ -62,7 +63,8 @@ export class LibSQLPostRepository implements PostRepository {
             owner_id = excluded.owner_id,
             public = excluded.public,
             slug = excluded.slug,
-            slug_counter = excluded.slug_counter;
+            slug_counter = excluded.slug_counter,
+            content_hash = excluded.content_hash;
       `,
       args: {
         gist_id: post.gistId,
@@ -78,6 +80,7 @@ export class LibSQLPostRepository implements PostRepository {
         public: post.public,
         slug: post.slug,
         slug_counter: post.slugCounter,
+        content_hash: post.contentHash,
       },
     });
   }
@@ -121,6 +124,7 @@ export class LibSQLPostRepository implements PostRepository {
       public: Boolean(result.rows[0].public),
       slug: result.rows[0].slug as string,
       slugCounter: result.rows[0].slug_counter as number,
+      contentHash: result.rows[0].content_hash as string,
     });
   }
 
@@ -176,9 +180,34 @@ export class LibSQLPostRepository implements PostRepository {
         public: Boolean(row.public),
         slug: row.slug as string,
         slugCounter: row.slug_counter as number,
+        contentHash: row.content_hash as string,
       });
     });
 
     return { totalPages, posts };
+  }
+
+  async deletePost(gistId: string) {
+    await this.db.execute({
+      sql: "DELETE FROM posts WHERE gist_id = ?",
+      args: [gistId],
+    });
+  }
+
+  async hasPostWithContentHash(contentHash?: string) {
+    if (!contentHash) {
+      return false;
+    }
+
+    if (contentHash.trim().length === 0) {
+      return false;
+    }
+
+    const result = await this.db.execute({
+      sql: "SELECT COUNT(*) as count FROM posts WHERE content_hash = ?",
+      args: [contentHash],
+    });
+
+    return result.rows[0].count as number > 0;
   }
 }

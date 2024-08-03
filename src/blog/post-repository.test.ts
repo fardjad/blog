@@ -20,69 +20,71 @@ describe("PostRepository", () => {
     client.close();
   });
 
-  it("should save a post", async () => {
-    const post = new Post(
-      createFakePostData({
-        title: "New Post",
-      }),
-    );
-    await postRepository.savePost(post);
-  });
-
-  it("should retrieve a previously saved post", async () => {
-    const post = new Post(
-      createFakePostData({
-        title: "New Post",
-      }),
-    );
-    await postRepository.savePost(post);
-    const retrievedPost = await postRepository.getPost(post.gistId);
-    assertEquals(retrievedPost?.title, post.title);
-  });
-
-  it("should update the post when a post with the same id exists", async () => {
-    const postData = createFakePostData({
-      title: "New Post",
-    });
-
-    await postRepository.savePost(new Post(postData));
-    await postRepository.savePost(
-      new Post({ ...postData, title: "Updated Post" }),
-    );
-
-    const post = await postRepository.getPost(postData.gistId);
-    assertEquals(post?.title, "Updated Post");
-  });
-
-  it("should make sure that '${slug}-${slug_counter}' is unique", async () => {
-    const postData = createFakePostData({
-      title: "New Post",
-    });
-    await postRepository.savePost(new Post(postData));
-    await assertRejects(async () => {
-      await postRepository.savePost(
-        new Post({ ...postData, gistId: generateRandomString(32) }),
+  describe("saving and retrieving posts", () => {
+    it("should save a post", async () => {
+      const post = new Post(
+        createFakePostData({
+          title: "New Post",
+        }),
       );
+      await postRepository.savePost(post);
     });
-  });
 
-  it("should get the slug counter", async () => {
-    const postData = createFakePostData({
-      title: "New Post",
+    it("should retrieve a previously saved post", async () => {
+      const post = new Post(
+        createFakePostData({
+          title: "New Post",
+        }),
+      );
+      await postRepository.savePost(post);
+      const retrievedPost = await postRepository.getPost(post.gistId);
+      assertEquals(retrievedPost?.title, post.title);
     });
-    await postRepository.savePost(new Post(postData));
-    const counter = await postRepository.getSlugCounter(postData.slug);
-    assertEquals(counter, 0);
-  });
 
-  it("should get a post by '${slug}-${slug_counter}'", async () => {
-    const postData = createFakePostData({
-      title: "New Post",
-      slugCounter: 1,
+    it("should update the post when a post with the same id exists", async () => {
+      const postData = createFakePostData({
+        title: "New Post",
+      });
+
+      await postRepository.savePost(new Post(postData));
+      await postRepository.savePost(
+        new Post({ ...postData, title: "Updated Post" }),
+      );
+
+      const post = await postRepository.getPost(postData.gistId);
+      assertEquals(post?.title, "Updated Post");
     });
-    await postRepository.savePost(new Post(postData));
-    const post = await postRepository.getPostBySlug("new-post-1");
-    assertEquals(post?.title, "New Post");
+
+    it("should make sure that '${slug}-${slug_counter}' is unique", async () => {
+      const postData = createFakePostData({
+        title: "New Post",
+      });
+      await postRepository.savePost(new Post(postData));
+      await assertRejects(async () => {
+        await postRepository.savePost(
+          new Post({ ...postData, gistId: generateRandomString(32) }),
+        );
+      });
+    });
+
+    it("should get the slug counter", async () => {
+      const postData = createFakePostData({
+        title: "New Post",
+      });
+      await postRepository.savePost(new Post(postData));
+      const counter = await postRepository.getSlugCounter(postData.slug);
+      assertEquals(counter, 0);
+    });
+
+    it("should get a post by '${slug}-${slug_counter}'", async () => {
+      const postData = createFakePostData({
+        title: "New Post",
+        slugCounter: 1,
+      });
+      await postRepository.savePost(new Post(postData));
+      const post = await postRepository.getPostBySlug("new-post-1");
+      assertEquals(post?.title, "New Post");
+    });
   });
 
   describe("listing posts", () => {
@@ -139,6 +141,50 @@ describe("PostRepository", () => {
           );
         }
       });
+    });
+  });
+
+  describe("matching posts by content hash", () => {
+    let generatedPosts: Post[] = [];
+
+    beforeEach(async () => {
+      generatedPosts.push(
+        new Post(
+          createFakePostData({ title: "Post with contentHash" }),
+        ),
+      );
+
+      for (const generatedPost of generatedPosts) {
+        await postRepository.savePost(generatedPost);
+      }
+    });
+
+    afterEach(async () => {
+      for (const generatedPost of generatedPosts) {
+        await postRepository.deletePost(generatedPost.gistId);
+      }
+
+      generatedPosts = [];
+    });
+
+    it("should return true when a post with a matching hash exists", async () => {
+      const actual = await postRepository.hasPostWithContentHash(
+        generatedPosts[0].contentHash,
+      );
+
+      assertEquals(actual, true);
+    });
+
+    it("should return false when content hash is undefined", async () => {
+      const actual = await postRepository.hasPostWithContentHash(undefined);
+
+      assertEquals(actual, false);
+    });
+
+    it("should return false when (the trimmed) content hash is an empty string", async () => {
+      const actual = await postRepository.hasPostWithContentHash(" ");
+
+      assertEquals(actual, false);
     });
   });
 });
