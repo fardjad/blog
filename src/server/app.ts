@@ -9,14 +9,14 @@ import { serveDirectory } from "./middleware/serve-directory.ts";
 import { prettifyHtml } from "./middleware/prettify-html.ts";
 import { generateTailwindCss } from "./tailwind/tailwind.ts";
 import { devMode } from "../config/values.ts";
-import { cacheControl } from "./cache/cache.ts";
+import { cacheControl } from "./middleware/cache.ts";
 
 export const createApp = async (client: Client) => {
   const app = new Hono();
 
   app.use(trimTrailingSlash());
   app.use(cacheControl);
-  app.use(devMode ? prettifyHtml() : minifyHtml());
+  app.use(devMode ? prettifyHtml : minifyHtml);
 
   let tailwindCss = await generateTailwindCss();
   app.get("/tailwind.css", async (c) => {
@@ -37,9 +37,11 @@ export const createApp = async (client: Client) => {
   );
 
   return app
-    .route("/og-image", createOgImageRoute(client))
     // / => home
     .route("/", createHomeRoute(client))
+    // /og-image => OG image for home
+    // /og-image/:slug => OG image for a post
+    .route("/og-image", createOgImageRoute(client))
     // /posts/:slug => post
     .route("/posts", createPostRoute(client));
 };

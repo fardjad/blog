@@ -10,7 +10,7 @@ import { PostBody } from "../component/post/post-body.tsx";
 import { renderTrustedMarkdown } from "../../markdown/markdown-renderer.ts";
 import { OpenGraphContext } from "../component/opengraph/opengraph-context.tsx";
 import { PostFooter } from "../component/post/post-footer.tsx";
-import { CacheVariables, etagCache } from "../cache/cache.ts";
+import { CacheVariables, etagCache } from "../middleware/cache.ts";
 
 type Variables = {
   tx: Transaction;

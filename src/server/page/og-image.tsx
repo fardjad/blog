@@ -12,7 +12,7 @@ import {
   blogDescription,
   blogTitle,
 } from "../../config/values.ts";
-import { CacheVariables, etagCache } from "../cache/cache.ts";
+import { CacheVariables, etagCache } from "../middleware/cache.ts";
 
 type Variables = {
   tx: Transaction;

@@ -40,7 +40,8 @@ export const transactional = (client: Client, contextKey = "tx") => {
         throw e;
       }
 
-      return c.body(null, 429);
+      // after calling next(), the response can only be set by reassiging c.res
+      c.res = new Response(null, { status: 429 });
     } finally {
       tx.close();
     }
