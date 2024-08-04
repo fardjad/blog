@@ -84,7 +84,7 @@ graph LR
 
 There are two main components that can run independently of each other:
 
-1. [The synchronization job](./src/cron/) that scans my Gists and stores the
+1. [The synchronization job](./src/cron.ts) that scans my Gists and stores the
    ones that are tagged as blog posts in a database.
 2. The [web application](./src/server/app.ts) that reads the stored Gists and
    shows them in a nice and clean way.
