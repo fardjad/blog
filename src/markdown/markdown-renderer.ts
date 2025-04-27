@@ -4,8 +4,9 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeStarryNight from "rehype-starry-night";
-import rehypeGithubHeading from "rehype-github-heading";
 import rehypeGithubDir from "rehype-github-dir";
+import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeStringify from "rehype-stringify";
 import { remarkRemoveTitle } from "./remark-remove-title.ts";
 import { remarkAlert } from "remark-github-blockquote-alert";
@@ -23,7 +24,11 @@ export const renderTrustedMarkdown = async (
     .use(rehypeAddMarginClassToOcticons)
     .use(rehypeRaw)
     .use(rehypeStarryNight)
-    .use(rehypeGithubHeading)
+    .use(rehypeSlug)
+    .use(rehypeAutolinkHeadings, {
+      behavior: "wrap",
+      properties: { className: ["autolink-heading"] },
+    })
     .use(rehypeGithubDir)
     .use(rehypeStringify)
     .process(document);

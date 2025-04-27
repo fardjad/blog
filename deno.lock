@@ -34,7 +34,9 @@
     "npm:octokit@^4.0.2": "4.1.3_@octokit+core@6.1.5",
     "npm:postcss@^8.5.3": "8.5.3",
     "npm:prettier@^3.3.3": "3.5.3",
+    "npm:rehype-autolink-headings@^7.1.0": "7.1.0",
     "npm:rehype-raw@7": "7.0.0",
+    "npm:rehype-slug@6": "6.0.0",
     "npm:rehype-starry-night@^2.1.0": "2.2.0",
     "npm:rehype-stringify@10": "10.0.1",
     "npm:remark-gfm@4": "4.0.1",
@@ -792,6 +794,9 @@
     "function-bind@1.1.2": {
       "integrity": "sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA=="
     },
+    "github-slugger@2.0.0": {
+      "integrity": "sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw=="
+    },
     "glob-parent@5.1.2": {
       "integrity": "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==",
       "dependencies": [
@@ -839,6 +844,18 @@
     },
     "hast-util-has-property@3.0.0": {
       "integrity": "sha512-MNilsvEKLFpV604hwfhVStK0usFY/QmM5zX16bo7EjnAEGofr5YyI37kzopBlZJkHD4t887i+q/C8/tr5Q94cA==",
+      "dependencies": [
+        "@types/hast"
+      ]
+    },
+    "hast-util-heading-rank@3.0.0": {
+      "integrity": "sha512-EJKb8oMUXVHcWZTDepnr+WNbfnXKFNf9duMesmr4S8SXTJBJ9M4Yok08pu9vxdJwdlGRhVumk9mEhkEvKGifwA==",
+      "dependencies": [
+        "@types/hast"
+      ]
+    },
+    "hast-util-is-element@3.0.0": {
+      "integrity": "sha512-Val9mnv2IWpLbNPqc/pUem+a7Ipj2aHacCwgNfTiK0vJKl0LF+4Ba4+v1oPHFpf3bLYmreq0/l3Gud9S5OH42g==",
       "dependencies": [
         "@types/hast"
       ]
@@ -1608,12 +1625,33 @@
         "picomatch"
       ]
     },
+    "rehype-autolink-headings@7.1.0": {
+      "integrity": "sha512-rItO/pSdvnvsP4QRB1pmPiNHUskikqtPojZKJPPPAVx9Hj8i8TwMBhofrrAYRhYOOBZH9tgmG5lPqDLuIWPWmw==",
+      "dependencies": [
+        "@types/hast",
+        "@ungap/structured-clone",
+        "hast-util-heading-rank",
+        "hast-util-is-element",
+        "unified",
+        "unist-util-visit"
+      ]
+    },
     "rehype-raw@7.0.0": {
       "integrity": "sha512-/aE8hCfKlQeA8LmyeyQvQF3eBiLRGNlfBJEvWH7ivp9sBqs7TNqBL5X3v157rM4IFETqDnIOO+z5M/biZbo9Ww==",
       "dependencies": [
         "@types/hast",
         "hast-util-raw",
         "vfile"
+      ]
+    },
+    "rehype-slug@6.0.0": {
+      "integrity": "sha512-lWyvf/jwu+oS5+hL5eClVd3hNdmwM1kAC0BUvEGD19pajQMIzcNUd/k9GsfQ+FfECvX+JE+e9/btsKH0EjJT6A==",
+      "dependencies": [
+        "@types/hast",
+        "github-slugger",
+        "hast-util-heading-rank",
+        "hast-util-to-string",
+        "unist-util-visit"
       ]
     },
     "rehype-starry-night@2.2.0": {
@@ -2004,21 +2042,13 @@
     }
   },
   "redirects": {
-    "https://esm.sh/github-slugger?target=denonext": "https://esm.sh/github-slugger@2.0.0?target=denonext",
-    "https://esm.sh/hast-util-to-string?target=denonext": "https://esm.sh/hast-util-to-string@3.0.1?target=denonext",
     "https://esm.sh/unist-util-is@^6.0.0?target=denonext": "https://esm.sh/unist-util-is@6.0.0?target=denonext",
     "https://esm.sh/unist-util-visit-parents@^6.0.0?target=denonext": "https://esm.sh/unist-util-visit-parents@6.0.1?target=denonext",
     "https://esm.sh/unist-util-visit?target=denonext": "https://esm.sh/unist-util-visit@5.0.0?target=denonext"
   },
   "remote": {
     "https://esm.sh/gh/rehypejs/rehype-github@d602dab29f/denonext/packages/dir.mjs": "cddd70dd12017bbfa6371c19bbaff60150e46b59fd83b1f6106084c340ed99a2",
-    "https://esm.sh/gh/rehypejs/rehype-github@d602dab29f/denonext/packages/heading.mjs": "b12b6d2f893688acc093f7ea674311d89f558185a742969a2c829101b12fdeb0",
     "https://esm.sh/gh/rehypejs/rehype-github@d602dab29f/packages/dir": "abc6bfa5334ea32c75afbf931232466ef3174d59336c82e367dbadc40345f320",
-    "https://esm.sh/gh/rehypejs/rehype-github@d602dab29f/packages/heading": "1e00926875a34422b2c94d04e971fd3a1a5c8f5a2e24a65a51e85fe17b0c83a7",
-    "https://esm.sh/github-slugger@2.0.0/denonext/github-slugger.mjs": "8a2344aa76877552fbf3a155b45155c9fada7c3382260630d501ad21d4e4f706",
-    "https://esm.sh/github-slugger@2.0.0?target=denonext": "d28cd7ca6c92db767c7d05e906b7cff215b9b90392306566e33a7763b1bbec33",
-    "https://esm.sh/hast-util-to-string@3.0.1/denonext/hast-util-to-string.mjs": "fc944b16b8c609c632097122415b01e74a6bb6f6183eaf8911ad6b4435fbe1b7",
-    "https://esm.sh/hast-util-to-string@3.0.1?target=denonext": "7eb0951e646dee20ddb56f741eb99306059f3dc84c5b68ef2478fa8059d2b6db",
     "https://esm.sh/unist-util-is@6.0.0/denonext/unist-util-is.mjs": "bbc00c612fd8daa022e50a0061856c52be17e0caa699dffa1e7b83b3bbe7b9f2",
     "https://esm.sh/unist-util-is@6.0.0?target=denonext": "7ac7092e893f27ed8edacb142d04dcc37169fdcfaa2ae8833a51fb9762d5e41f",
     "https://esm.sh/unist-util-visit-parents@6.0.1/denonext/do-not-use-color.mjs": "94b57609e52050f8d615ab3d096a2efb7183053a494dee89f9af2fe6c8fb9f0b",
@@ -2049,7 +2079,9 @@
       "npm:octokit@^4.0.2",
       "npm:postcss@^8.5.3",
       "npm:prettier@^3.3.3",
+      "npm:rehype-autolink-headings@^7.1.0",
       "npm:rehype-raw@7",
+      "npm:rehype-slug@6",
       "npm:rehype-starry-night@^2.1.0",
       "npm:rehype-stringify@10",
       "npm:remark-gfm@4",

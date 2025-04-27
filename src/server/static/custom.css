@@ -1,3 +1,7 @@
 .hover-underline:hover * {
   text-decoration: underline;
 }
+
+.autolink-heading {
+  color: currentColor !important;
+}

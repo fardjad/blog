@@ -42,11 +42,11 @@ describe("renderTrustedMarkdown", () => {
     assertStringIncludes(result, "language-ts");
   });
 
-  it("should make headings link back to themselves", async () => {
-    const markdown = "## Heading";
+  it("should wrap headings with a link to themselves", async () => {
+    const markdown = "## Some heading";
     const result = await renderTrustedMarkdown(markdown);
-    assertStringIncludes(result, 'id="heading"');
-    assertStringIncludes(result, 'href="#heading"');
+    assertStringIncludes(result, 'id="some-heading"');
+    assertStringIncludes(result, 'href="#some-heading"');
   });
 
   it("should add dir=auto everywhere", async () => {
