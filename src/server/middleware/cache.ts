@@ -1,4 +1,4 @@
-import { createFactory } from "hono/factory";
+import { createMiddleware } from "hono/factory";
 import { cacheMaxAge } from "../../config/values.ts";
 import { Context, Env } from "hono";
 import { sha256 } from "../../hash/sha256.ts";
@@ -7,8 +7,6 @@ export type CacheVariables = {
   cacheHitResponse?: Response;
   contentHash?: string;
 };
-
-const factory = createFactory();
 
 /**
  * This can be used as the ETag header for resources that stay the same across
@@ -21,7 +19,7 @@ export const deploymentIdContentHash = await sha256(
 /**
  * Adds a `Cache-Control` header to the responses
  */
-export const cacheControl = factory.createMiddleware(async (c, next) => {
+export const cacheControl = createMiddleware(async (c, next) => {
   const cacheControlHeader = `public, max-age=${cacheMaxAge}`;
   c.res.headers.set("Cache-Control", cacheControlHeader);
 
@@ -69,7 +67,7 @@ export const etagCache = <T extends Env>(
     contentHashToMatch: string,
   ) => boolean | Promise<boolean>,
 ) => {
-  return factory.createMiddleware(
+  return createMiddleware(
     async (c, next) => {
       if (!c.res.headers.has("cache-control")) {
         await next();

@@ -1,8 +1,8 @@
 {
   "imports": {
-    "@fardjad/libsql-migrator": "jsr:@fardjad/libsql-migrator@^0.1.16",
-    "@hono/zod-validator": "npm:@hono/zod-validator@0.2.2",
-    "@libsql/client": "npm:@libsql/client@^0.7.0",
+    "@fardjad/libsql-migrator": "jsr:@fardjad/libsql-migrator@^0.1.17",
+    "@hono/zod-validator": "npm:@hono/zod-validator@0.5.0",
+    "@libsql/client": "npm:@libsql/client@^0.15.4",
     "@resvg/resvg-wasm": "npm:@resvg/resvg-wasm@^2.6.2",
     "@sindresorhus/slugify": "npm:@sindresorhus/slugify@^2.2.1",
     "@std/assert": "jsr:@std/assert@^1.0.0",
@@ -12,16 +12,16 @@
     "@std/fs": "jsr:@std/fs@^1.0.0",
     "@std/jsonc": "jsr:@std/jsonc@^1.0.0",
     "@std/path": "jsr:@std/path@^1.0.1",
-    "@std/testing": "jsr:@std/testing@^0.225.3",
+    "@std/testing": "jsr:@std/testing@^1.0.11",
     "hashtag-regex": "npm:hashtag-regex@^2.2.0",
     "hast-util-has-property": "npm:hast-util-has-property@^3.0.0",
-    "hono": "npm:hono@4.4.2",
+    "hono": "npm:hono@4.7.7",
     "html-minifier-terser": "npm:html-minifier-terser@^7.2.0",
     "octokit": "npm:octokit@^4.0.2",
-    "postcss": "npm:postcss@^8.4.40",
+    "postcss": "npm:postcss@^8.5.3",
     "prettier": "npm:prettier@^3.3.3",
-    "rehype-github-dir": "https://esm.sh/gh/rehypejs/rehype-github@7d7e851b75/packages/dir",
-    "rehype-github-heading": "https://esm.sh/gh/rehypejs/rehype-github@7d7e851b75/packages/heading",
+    "rehype-github-dir": "https://esm.sh/gh/rehypejs/rehype-github@d602dab29f/packages/dir",
+    "rehype-github-heading": "https://esm.sh/gh/rehypejs/rehype-github@d602dab29f/packages/heading",
     "rehype-raw": "npm:rehype-raw@^7.0.0",
     "rehype-starry-night": "npm:rehype-starry-night@^2.1.0",
     "rehype-stringify": "npm:rehype-stringify@^10.0.0",
@@ -29,7 +29,7 @@
     "remark-github-blockquote-alert": "npm:remark-github-blockquote-alert@^1.2.1",
     "remark-parse": "npm:remark-parse@^11.0.0",
     "remark-rehype": "npm:remark-rehype@^11.1.0",
-    "satori": "npm:satori@^0.10.14",
+    "satori": "npm:satori@^0.12.2",
     "tailwindcss": "npm:tailwindcss@^3.4.7",
     "unified": "npm:unified@^11.0.5",
     "unist-util-visit": "npm:unist-util-visit@^5.0.0",
@@ -56,5 +56,6 @@
       "**/node_modules"
     ],
     "entrypoint": "src/index.ts"
-  }
+  },
+  "nodeModulesDir": "auto"
 }
