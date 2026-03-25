@@ -1,28 +1,33 @@
-import { hasProperty } from "hast-util-has-property";
-import { visit } from "unist-util-visit";
-import type { Root } from "npm:@types/hast";
+import type { Plugin } from "unified";
 
-export const rehypeAddMarginClassToOcticons = () => {
-  return (tree: Root) => {
-    visit(tree, "element", (node, _index, parent) => {
-      if (
-        node.tagName !== "svg" || parent?.type !== "element" ||
-        parent?.tagName !== "p"
-      ) {
-        return;
-      }
+type HtmlNode = {
+  type?: string;
+  tagName?: string;
+  children?: HtmlNode[];
+  properties: Record<string, unknown>;
+};
 
-      if (!hasProperty(node, "class")) {
-        return;
-      }
+const addOcticonMargin = (node: HtmlNode, parent?: HtmlNode) => {
+  if (
+    node.tagName === "svg" && parent?.type === "element" &&
+    parent.tagName === "p"
+  ) {
+    const className = [
+      node.properties.className ?? node.properties.class,
+    ].flat().filter((value): value is string => typeof value === "string");
 
-      const className = [node.properties.class].flat() as string[];
-
-      if (!className.includes("octicon")) {
-        return;
-      }
-
+    if (className.includes("octicon")) {
       node.properties.className = [...className, "mr-2"];
-    });
+    }
+  }
+
+  for (const child of node.children ?? []) {
+    addOcticonMargin(child, node);
+  }
+};
+
+export const rehypeAddMarginClassToOcticons: Plugin = () => {
+  return (tree) => {
+    addOcticonMargin(tree as HtmlNode);
   };
 };

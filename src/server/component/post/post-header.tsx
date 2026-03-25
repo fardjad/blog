@@ -12,11 +12,11 @@ export const PostHeader = (
   const { title } = useContext(OpenGraphContext);
 
   return (
-    <header class="tw-mb-4 tw-pb-4">
+    <header class="tw:mb-4 tw:pb-4">
       <h1>{title}</h1>
-      <div class="tw-flex tw-items-center tw-gap-4 tw-mt-4">
-        <img class="tw-rounded-full tw-w-24 tw-h-24" src={avatarUrl} />
-        <p class="tw-m-0">
+      <div class="tw:flex tw:items-center tw:gap-4 tw:mt-4">
+        <img class="tw:rounded-full tw:size-24" src={avatarUrl} />
+        <p class="tw:m-0">
           Published on <FormattedDate date={props.publishDate} />
           <br />
           In <a href="/">{blogTitle}</a>

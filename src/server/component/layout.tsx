@@ -3,7 +3,9 @@ import { type PropsWithChildren, useContext } from "hono/jsx";
 import { OpenGraphContext } from "./opengraph/opengraph-context.tsx";
 
 const Document = ({ children }: PropsWithChildren) =>
-  html`<!DOCTYPE html>${children}`;
+  html`
+    <!DOCTYPE html>${children}
+  `;
 
 const OpenGraph = () => {
   const { type, url, title, image, description } = useContext(OpenGraphContext);
@@ -72,7 +74,7 @@ export const Layout = (
           />
           <link rel="stylesheet" href="/static/custom.css" />
         </head>
-        <body class="markdown-body tw-box-border tw-min-w-[400px] tw-max-w-[980px] tw-mx-auto tw-p-[10px] sm:tw-p-[45px]">
+        <body class="markdown-body tw:box-border tw:min-w-[400px] tw:max-w-[980px] tw:mx-auto tw:p-[10px] tw:sm:p-[45px]">
           {props.children}
         </body>
       </html>

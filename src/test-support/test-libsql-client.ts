@@ -2,7 +2,7 @@ import {
   createMigrationScriptIterator,
   LibSQLMigrator,
 } from "@fardjad/libsql-migrator";
-import { createClient } from "npm:@libsql/client/node";
+import { createClient } from "@libsql/client/node";
 
 export const createTestClient = async () => {
   const client = createClient({ url: ":memory:" });

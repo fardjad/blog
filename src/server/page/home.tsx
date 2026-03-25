@@ -26,9 +26,9 @@ type Variables = {
 const postsQueryValidator = zValidator(
   "query",
   z.object({
-    page: z.number({ coerce: true }).int().min(0).optional().default(0),
+    page: z.coerce.number().int().min(0).optional().default(0),
     page_size: z
-      .number({ coerce: true })
+      .coerce.number()
       .int()
       .min(0)
       .max(100)
@@ -84,7 +84,7 @@ export const createHomeRoute = (client: Client) => {
               the blog is available <a href={sourceCodeUrl}>here</a>.
             </p>
             <h2>Posts</h2>
-            <ul class="tw-list-none tw-p-0 tw-m-0">
+            <ul class="tw:list-none tw:p-0 tw:m-0">
               {posts.map((post) => {
                 const postUrl = new URL(c.req.url);
                 postUrl.hash = "";
@@ -92,16 +92,16 @@ export const createHomeRoute = (client: Client) => {
                 postUrl.pathname = `/posts/${post.slug}`;
 
                 return (
-                  <li class="hover-underline tw-flex tw-justify-between tw-items-center tw-py-2">
+                  <li class="hover-underline tw:flex tw:justify-between tw:items-center tw:py-2">
                     <a
                       href={postUrl.toString()}
-                      class="tw-truncate tw-w-full tw-overflow-hidden tw-text-ellipsis"
+                      class="tw:truncate tw:w-full tw:overflow-hidden tw:text-ellipsis"
                     >
                       {post.title}
                     </a>
                     <FormattedDate
                       date={post.createdAt}
-                      className="tw-text-gray-500 tw-text-sm tw-whitespace-nowrap tw-ml-4"
+                      className="tw:text-gray-500 tw:text-sm tw:whitespace-nowrap tw:ml-4"
                     />
                   </li>
                 );

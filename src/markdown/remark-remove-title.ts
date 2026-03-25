@@ -1,17 +1,27 @@
-import type { Transformer } from "unified";
-import { SKIP, visit, type Visitor } from "unist-util-visit";
-import type { Heading } from "npm:@types/mdast";
+import type { Plugin } from "unified";
 
-export const remarkRemoveTitle = (): Transformer => {
-  return function transformer(tree): void {
-    const visitor: Visitor<Heading> = (node, _index, parent) => {
-      if (node.type === "heading" && node.depth === 1 && parent != null) {
-        parent.children = parent.children.filter((child) => child !== node);
-      }
+type MarkdownNode = {
+  type?: string;
+  depth?: number;
+  children?: MarkdownNode[];
+};
 
-      return SKIP;
-    };
+const removeTitle = (node: MarkdownNode) => {
+  if (node.children == null) {
+    return;
+  }
 
-    visit(tree, "heading", visitor);
+  node.children = node.children.filter((child) =>
+    !(child.type === "heading" && child.depth === 1)
+  );
+
+  for (const child of node.children) {
+    removeTitle(child);
+  }
+};
+
+export const remarkRemoveTitle: Plugin = () => {
+  return (tree) => {
+    removeTitle(tree as MarkdownNode);
   };
 };

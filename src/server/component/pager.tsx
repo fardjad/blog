@@ -1,23 +1,23 @@
 import type { PropsWithChildren } from "hono/jsx";
 
 const baseClasses = new Set([
-  "tw-px-4",
-  "tw-py-2",
-  "tw-bg-gray-700",
-  "tw-text-white",
-  "tw-rounded",
-  "tw-transition",
-  "tw-duration-300",
-  "hover:tw-bg-gray-600",
+  "tw:px-4",
+  "tw:py-2",
+  "tw:bg-gray-700",
+  "tw:text-white",
+  "tw:rounded",
+  "tw:transition",
+  "tw:duration-300",
+  "tw:hover:bg-gray-600",
 ]);
 
 const enabledClasses = new Set([
-  "hover:tw-bg-gray-600",
+  "tw:hover:bg-gray-600",
 ]);
 
 const disabledClasses = new Set([
-  "tw-opacity-50",
-  "tw-cursor-not-allowed",
+  "tw:opacity-50",
+  "tw:cursor-not-allowed",
 ]);
 
 const LinkButton = (
@@ -84,14 +84,14 @@ export const Pager = (
   );
 
   return (
-    <div class="tw-mt-4 tw-flex tw-items-center">
+    <div class="tw:mt-4 tw:flex tw:items-center">
       <LinkButton
         disabled={!hasPrevious}
         url={previousPageUrl.toString()}
       >
         Newer
       </LinkButton>
-      <span class="tw-text-gray-500 tw-mx-4">
+      <span class="tw:text-gray-500 tw:mx-4">
         Page {normalizedProps.currentPage + 1} of{"  "}
         {normalizedProps.totalPages}
       </span>

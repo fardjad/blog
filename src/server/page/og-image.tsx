@@ -14,6 +14,9 @@ import {
 } from "../../config/values.ts";
 import { CacheVariables, etagCache } from "../middleware/cache.ts";
 
+const toArrayBuffer = (bytes: Uint8Array<ArrayBufferLike>): ArrayBuffer =>
+  new Uint8Array(bytes).buffer;
+
 type Variables = {
   tx: Transaction;
 } & CacheVariables;
@@ -45,13 +48,13 @@ const createPngResponse = async (
       fonts: [
         {
           name: "Roboto",
-          data: robotoBold,
+          data: toArrayBuffer(robotoBold),
           weight: 700,
           style: "normal",
         },
         {
           name: "Roboto",
-          data: robotoMedium,
+          data: toArrayBuffer(robotoMedium),
           weight: 500,
           style: "normal",
         },
@@ -65,7 +68,7 @@ const createPngResponse = async (
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
 
-  return new Response(pngBuffer, {
+  return new Response(toArrayBuffer(pngBuffer), {
     headers: {
       "Content-Type": "image/png",
     },
